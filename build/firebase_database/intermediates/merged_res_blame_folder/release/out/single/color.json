@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "C:\\sabih\\office\\tssol-sendeaze-driver-app-d7c738cacff5\\build\\firebase_database\\intermediates\\res\\merged\\release\\color\\common_google_signin_btn_tint.xml",
+        "source": "C:\\Users\\Remerse\\.gradle\\caches\\transforms-3\\ff44e5c863d607e9b2b96ff4bc4a0791\\transformed\\jetified-play-services-base-17.1.0\\res\\color\\common_google_signin_btn_tint.xml"
+    },
+    {
+        "merged": "C:\\sabih\\office\\tssol-sendeaze-driver-app-d7c738cacff5\\build\\firebase_database\\intermediates\\res\\merged\\release\\color\\common_google_signin_btn_text_dark.xml",
+        "source": "C:\\Users\\Remerse\\.gradle\\caches\\transforms-3\\ff44e5c863d607e9b2b96ff4bc4a0791\\transformed\\jetified-play-services-base-17.1.0\\res\\color\\common_google_signin_btn_text_dark.xml"
+    },
+    {
+        "merged": "C:\\sabih\\office\\tssol-sendeaze-driver-app-d7c738cacff5\\build\\firebase_database\\intermediates\\res\\merged\\release\\color\\common_google_signin_btn_text_light.xml",
+        "source": "C:\\Users\\Remerse\\.gradle\\caches\\transforms-3\\ff44e5c863d607e9b2b96ff4bc4a0791\\transformed\\jetified-play-services-base-17.1.0\\res\\color\\common_google_signin_btn_text_light.xml"
+    }
+]

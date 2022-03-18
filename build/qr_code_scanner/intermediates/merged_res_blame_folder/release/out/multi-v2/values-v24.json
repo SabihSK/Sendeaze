@@ -1,0 +1,34 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\sabih\\office\\tssol-sendeaze-driver-app-d7c738cacff5\\build\\qr_code_scanner\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-v24\\values-v24.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Remerse\\.gradle\\caches\\transforms-3\\0bf91ab0ba84251fca327ddf33f10294\\transformed\\appcompat-1.3.0\\res\\values-v24\\values-v24.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,212",
+                        "endColumns": "156,134",
+                        "endOffsets": "207,342"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "C:\\sabih\\office\\tssol-sendeaze-driver-app-d7c738cacff5\\build\\qr_code_scanner\\intermediates\\res\\merged\\release\\values-v24\\values-v24.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Remerse\\.gradle\\caches\\transforms-3\\0bf91ab0ba84251fca327ddf33f10294\\transformed\\appcompat-1.3.0\\res\\values-v24\\values-v24.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,212",
+                        "endColumns": "156,134",
+                        "endOffsets": "207,342"
+                    }
+                }
+            ]
+        }
+    ]
+}

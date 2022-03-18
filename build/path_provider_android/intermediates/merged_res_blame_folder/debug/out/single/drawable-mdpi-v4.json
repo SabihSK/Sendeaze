@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "C:\\sabih\\office\\tssol-sendeaze-driver-app-d7c738cacff5\\build\\path_provider_android\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\notification_bg_low_pressed.9.png",
+        "source": "C:\\Users\\Remerse\\.gradle\\caches\\transforms-3\\b0f5cf977f087a59d237d519d5ffa257\\transformed\\core-1.6.0\\res\\drawable-mdpi-v4\\notification_bg_low_pressed.9.png"
+    },
+    {
+        "merged": "C:\\sabih\\office\\tssol-sendeaze-driver-app-d7c738cacff5\\build\\path_provider_android\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\notification_bg_normal.9.png",
+        "source": "C:\\Users\\Remerse\\.gradle\\caches\\transforms-3\\b0f5cf977f087a59d237d519d5ffa257\\transformed\\core-1.6.0\\res\\drawable-mdpi-v4\\notification_bg_normal.9.png"
+    },
+    {
+        "merged": "C:\\sabih\\office\\tssol-sendeaze-driver-app-d7c738cacff5\\build\\path_provider_android\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\notify_panel_notification_icon_bg.png",
+        "source": "C:\\Users\\Remerse\\.gradle\\caches\\transforms-3\\b0f5cf977f087a59d237d519d5ffa257\\transformed\\core-1.6.0\\res\\drawable-mdpi-v4\\notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "C:\\sabih\\office\\tssol-sendeaze-driver-app-d7c738cacff5\\build\\path_provider_android\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\notification_bg_normal_pressed.9.png",
+        "source": "C:\\Users\\Remerse\\.gradle\\caches\\transforms-3\\b0f5cf977f087a59d237d519d5ffa257\\transformed\\core-1.6.0\\res\\drawable-mdpi-v4\\notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "C:\\sabih\\office\\tssol-sendeaze-driver-app-d7c738cacff5\\build\\path_provider_android\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\notification_bg_low_normal.9.png",
+        "source": "C:\\Users\\Remerse\\.gradle\\caches\\transforms-3\\b0f5cf977f087a59d237d519d5ffa257\\transformed\\core-1.6.0\\res\\drawable-mdpi-v4\\notification_bg_low_normal.9.png"
+    }
+]

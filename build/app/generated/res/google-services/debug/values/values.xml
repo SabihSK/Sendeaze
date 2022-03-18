@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">618560044303-qd6lqleh621kds0a9p70n3ppoeimqq1e.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">618560044303</string>
+    <string name="google_api_key" translatable="false">AIzaSyAgBYBHxBXIgpZOB5uE2RRjwlReLHb7qhY</string>
+    <string name="google_app_id" translatable="false">1:618560044303:android:80f1576ff625460041927a</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAgBYBHxBXIgpZOB5uE2RRjwlReLHb7qhY</string>
+    <string name="google_storage_bucket" translatable="false">sendeaze-342620.appspot.com</string>
+    <string name="project_id" translatable="false">sendeaze-342620</string>
+</resources>

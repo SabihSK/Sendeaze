@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>953125175835-lo7aeoiq6v5g31eho8nejvrjrok61dg3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.953125175835-lo7aeoiq6v5g31eho8nejvrjrok61dg3</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDcvUu1CS08AQmrXwcah1HAMT3iA4al9fY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>953125175835</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.sendeaze.driver.test</string>
+	<key>PROJECT_ID</key>
+	<string>sendeaze-fc978</string>
+	<key>STORAGE_BUCKET</key>
+	<string>sendeaze-fc978.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:953125175835:ios:211070363a3058c5c72ebe</string>
+	<key>DATABASE_URL</key>
+	<string>https://sendeaze-fc978-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

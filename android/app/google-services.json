@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "618560044303",
+    "project_id": "sendeaze-342620",
+    "storage_bucket": "sendeaze-342620.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618560044303:android:80f1576ff625460041927a",
+        "android_client_info": {
+          "package_name": "com.example.sendeaze"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618560044303-qd6lqleh621kds0a9p70n3ppoeimqq1e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgBYBHxBXIgpZOB5uE2RRjwlReLHb7qhY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618560044303-qd6lqleh621kds0a9p70n3ppoeimqq1e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "618560044303-giva6ug4vm17cmqot9cl89lv3fg1bg0l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sendeaze.driver.test",
+                "app_store_id": "1606213013"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
