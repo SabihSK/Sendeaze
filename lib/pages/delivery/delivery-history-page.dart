@@ -73,8 +73,10 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
                             var item = snapshot.data!.data![index];
                             return OrderDetailCard(
                                 data: item,
-                                ontap: () => Get.to(
-                                    () => DeliveryDetailsPage(data: item)));
+                                ontap: () => Get.to(() => DeliveryDetailsPage(
+                                      data: item,
+                                      width: MediaQuery.of(context).size.width,
+                                    )));
                           });
                     }),
               )

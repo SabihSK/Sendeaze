@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,7 +35,14 @@ class _LoginPageState extends State<LoginPage> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     getCurrentLocation();
+    getToken();
     super.initState();
+  }
+
+  String? token;
+  getToken() async {
+    token = await FirebaseMessaging.instance.getToken();
+    print(token);
   }
 
   @override
@@ -131,8 +139,8 @@ class _LoginPageState extends State<LoginPage> {
                       } else {
                         showLoader = true;
                         UserService()
-                            .doLogin(
-                                _emailController.text, _passwordController.text)
+                            .doLogin(_emailController.text,
+                                _passwordController.text, token)
                             .then(
                                 (value) => setState(() => showLoader = false));
                       }

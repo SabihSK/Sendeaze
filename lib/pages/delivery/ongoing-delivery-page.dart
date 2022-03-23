@@ -11,6 +11,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sendeaze/constants/assets-constants.dart';
 import 'package:sendeaze/constants/color-constants.dart';
 import 'package:sendeaze/constants/shared-pref-constant.dart';
+import 'package:sendeaze/controllers/change_google_map_polyline_controller.dart';
 import 'package:sendeaze/models/driver-location-model.dart';
 import 'package:sendeaze/models/orders-list-response.dart';
 import 'package:sendeaze/pages/home-page.dart';
@@ -37,8 +38,10 @@ LatLng DEST_LOCATION = LatLng(_destLatitude, _destLongitude);
 class OnGoingDeliveryPage extends StatefulWidget {
   static String route = "/pages/delivery/ongoing-delivery-page";
   final OrderListData? data;
+  final width;
 
-  const OnGoingDeliveryPage({Key? key, this.data}) : super(key: key);
+  const OnGoingDeliveryPage({Key? key, this.data, required this.width})
+      : super(key: key);
 
   @override
   _OnGoingDeliveryPageState createState() => _OnGoingDeliveryPageState();
@@ -124,10 +127,11 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
     long = await SharedPref().getDataFromLocal('lng');
     setState(() {});
     sourceIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5), 'assets/driving_pin.png');
+        ImageConfiguration(devicePixelRatio: widget.width * 0.25),
+        'assets/driving_pin.png');
 
     destinationIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
+        ImageConfiguration(devicePixelRatio: widget.width * 0.25),
         'assets/destination_map_marker.png');
   }
 
@@ -212,7 +216,10 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                 Padding(
                   padding: const EdgeInsets.only(right: 12),
                   child: FloatingActionButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await launch(
+                          "https://www.google.com/maps/search/${widget.data!.pickupLatitude!},${widget.data!.pickupLongitude!}");
+                    },
                     heroTag: UniqueKey(),
                     child: Image.asset(AssetConstants.DIRECTIONS),
                     mini: true,
@@ -311,9 +318,12 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
     print(
         "----poly lines ${result.status}  ${result.points.length} ${result.errorMessage}");
     if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
+      polylineCoordinates = await PolylineController().decode(lat, long,
+          widget.data?.deliveryLatitude, widget.data?.deliveryLongitude);
+
+      // result.points.forEach((PointLatLng point) {
+      //   polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      // });
       setState(() {
         _polylines.add(Polyline(
             width: 5, // set the width of the polylines
@@ -353,7 +363,7 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
         //   "Updated Coordinates",
         //   "newLat: $lat newlong: $long",
         // );
-        updateDatabaseWithUpdatedCoordinates(lat, long);
+        // updateDatabaseWithUpdatedCoordinates(lat, long);
       });
     }
   }
@@ -662,6 +672,7 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                                 "You can not give your feedback again.") {
                           Get.offAllNamed(HomePage.route,
                               arguments: "rating Done");
+                          startDelivery(context);
                         }
                       });
                     },
@@ -719,27 +730,27 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
         clipBehavior: Clip.antiAlias);
   }
 
-  void updateDatabaseWithUpdatedCoordinates(
-      double? latitude, double? longitude) async {
-    String driverId =
-        await SharedPref().getDataFromLocal(SharedPrefConstants.driver_id);
+//   void updateDatabaseWithUpdatedCoordinates(
+//       double? latitude, double? longitude) async {
+//     String driverId =
+//         await SharedPref().getDataFromLocal(SharedPrefConstants.driver_id);
 
-    // Driver(
-    //     latitude: latitude,
-    //     longitude: longitude,
-    //     driverId: int.parse(driverId));
+//     // Driver(
+//     //     latitude: latitude,
+//     //     longitude: longitude,
+//     //     driverId: int.parse(driverId));
 
-    await _driversRef.set({
-      "latitude": latitude,
-      "longitude": longitude,
-      "driverId": 29
-//      driverId: int.parse(driverId)
-    }).then((value) {
-      print("---- data saved");
-    }).catchError((onError) {
-      print("---- onError $onError");
-    });
-  }
+//     await _driversRef.set({
+//       "latitude": latitude,
+//       "longitude": longitude,
+//       "driverId": 29
+// //      driverId: int.parse(driverId)
+//     }).then((value) {
+//       print("---- data saved");
+//     }).catchError((onError) {
+//       print("---- onError $onError");
+//     });
+//   }
 }
 
 class AppCheckListTile extends StatelessWidget {

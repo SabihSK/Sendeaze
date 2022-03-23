@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sendeaze/constants/shared-pref-constant.dart';
+import 'package:sendeaze/controllers/change_google_map_polyline_controller.dart';
 import 'package:sendeaze/models/orders-list-response.dart';
 import 'package:sendeaze/pages/delivery/ongoing-delivery-page.dart';
 import 'package:sendeaze/services/common/shared-preference-service.dart';
@@ -16,13 +17,15 @@ import 'package:sendeaze/widgets/order-details-bottom-sheet.dart';
 class DeliveryDetailsPage extends StatefulWidget {
   static String route = "/pages/delivery/delivery-detail-page";
   final OrderListData? data;
+  final width;
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
 
-  const DeliveryDetailsPage({Key? key, this.data}) : super(key: key);
+  const DeliveryDetailsPage({Key? key, this.data, required this.width})
+      : super(key: key);
 
   @override
   _DeliveryDetailsPageState createState() => _DeliveryDetailsPageState();
@@ -56,7 +59,9 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
     super.initState();
     polylinePoints = PolylinePoints();
     // set custom marker pins
-    setSourceAndDestinationIcons();
+    Future.delayed(Duration.zero, () {
+      setSourceAndDestinationIcons();
+    });
   }
 
   void setSourceAndDestinationIcons() async {
@@ -64,10 +69,11 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
     long = await SharedPref().getDataFromLocal('lng');
     setState(() {});
     sourceIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5), 'assets/driving_pin.png');
+        ImageConfiguration(devicePixelRatio: widget.width * 0.25),
+        'assets/driving_pin.png');
 
     destinationIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.5),
+        ImageConfiguration(devicePixelRatio: widget.width * 0.25),
         'assets/destination_map_marker.png');
   }
 
@@ -107,15 +113,19 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
         PointLatLng(double.parse(widget.data!.deliveryLongitude!),
             double.parse(widget.data!.deliveryLatitude!)));
     if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
+      polylineCoordinates = await PolylineController().decode(lat, long,
+          widget.data?.deliveryLatitude, widget.data?.deliveryLongitude);
+
+      // result.points.forEach((PointLatLng point) async {
+      //   polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      //   // polylineCoordinates = await PolylineController().decode();
+      // });
       setState(() {
         _polylines.add(Polyline(
             width: 5, // set the width of the polylines
             polylineId: PolylineId("poly"),
             color: Color.fromARGB(255, 40, 122, 198),
-            points: polylineCoordinates));
+            points: polylineCoordinates)); //PolylineController().decode()
       });
     }
   }
@@ -162,6 +172,8 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
           tilt: CAMERA_TILT,
           bearing: CAMERA_BEARING);
     }
+
+    print("=>check $polylineCoordinates");
 
     return Scaffold(
       body: SafeArea(

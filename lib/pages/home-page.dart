@@ -1,14 +1,19 @@
 import 'dart:async';
 
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_svg/svg.dart';
 import 'package:sendeaze/constants/assets-constants.dart';
 import 'package:sendeaze/constants/color-constants.dart';
+import 'package:sendeaze/constants/shared-pref-constant.dart';
 import 'package:sendeaze/controllers/delivery-controller.dart';
+import 'package:sendeaze/controllers/firebase_location_controller.dart';
 import 'package:sendeaze/pages/home/drawer-page.dart';
 import 'package:sendeaze/pages/home/profile.dart';
+import 'package:sendeaze/services/common/shared-preference-service.dart';
 import 'package:sendeaze/widgets/app-widgets.dart';
 
 import '../services/orders/orders-services.dart';
@@ -22,9 +27,11 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+DeliveriesController _deliveriesController = DeliveriesController();
+var deliveryList;
+
 class _HomePageState extends State<HomePage> {
   int _selectedIdx = 0;
-  DeliveriesController _deliveriesController = DeliveriesController();
   List<Widget> _widgetOptions = <Widget>[
     HomeTab(),
     EditProfileScreen(
@@ -33,14 +40,21 @@ class _HomePageState extends State<HomePage> {
   ];
   @override
   void initState() {
+    LocationUpdate().updateLocation();
     _deliveriesController.getDeliveriesList();
     getData();
     super.initState();
   }
 
-  var deliveryList;
-
   getData() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    print(token);
+    String driverId =
+        await SharedPref().getDataFromLocal(SharedPrefConstants.driver_id);
+
+    final dbrEf = FirebaseDatabase.instance.ref();
+
+    await dbrEf.child("driverToken/$driverId").update({"driverToken": token});
     // await OrderService().getDeliveries();
     // deliveryList = OrderService().deliveriesData;
 
@@ -75,32 +89,36 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            _deliveriesController.getDeliveriesList();
-            deliveryList = _deliveriesController.deliveriesList.data;
-            // setState(() {});
-            print(deliveryList);
-            if (deliveryList != null && deliveryList.isNotEmpty) {
-              if (deliveryList.any((e) =>
-                  e.deliveryStatus != "Delivered" &&
-                  e.deliveryStatus != "Not Delivered" &&
-                  e.deliveryStatus != "Pending")) {
-                Get.to(
-                  () => OnGoingDeliveryPage(
-                    data: deliveryList.firstWhere(
-                      (e) =>
-                          e.deliveryStatus != "Delivered" &&
-                          e.deliveryStatus != "Not Delivered" &&
-                          e.deliveryStatus != "Pending",
-                    ),
-                  ),
-                );
-              } else {
-                AppWidgets.showSnackBar("No delivery found to deliver!!!");
-              }
-            } else {
-              AppWidgets.showSnackBar("No delivery found to deliver!!!");
-            }
+            startDelivery(context);
           });
+
+          // setState(() {
+          //   _deliveriesController.getDeliveriesList();
+          //   deliveryList = _deliveriesController.deliveriesList.data;
+          //   // setState(() {});
+          //   print(deliveryList);
+          //   if (deliveryList != null && deliveryList.isNotEmpty) {
+          //     if (deliveryList.any((e) =>
+          //         e.deliveryStatus != "Delivered" &&
+          //         e.deliveryStatus != "Not Delivered" &&
+          //         e.deliveryStatus != "Pending")) {
+          //       Get.to(
+          //         () => OnGoingDeliveryPage(
+          //           data: deliveryList.firstWhere(
+          //             (e) =>
+          //                 e.deliveryStatus != "Delivered" &&
+          //                 e.deliveryStatus != "Not Delivered" &&
+          //                 e.deliveryStatus != "Pending",
+          //           ),
+          //         ),
+          //       );
+          //     } else {
+          //       AppWidgets.showSnackBar("No delivery found to deliver!!!");
+          //     }
+          //   } else {
+          //     AppWidgets.showSnackBar("No delivery found to deliver!!!");
+          //   }
+          // });
         },
         heroTag: UniqueKey(),
         child: SvgPicture.asset(
@@ -152,5 +170,34 @@ class _HomePageState extends State<HomePage> {
             ]),
       ),
     );
+  }
+}
+
+void startDelivery(context) {
+  _deliveriesController.getDeliveriesList();
+  deliveryList = _deliveriesController.deliveriesList.data;
+  // setState(() {});
+  print(deliveryList);
+  if (deliveryList != null && deliveryList.isNotEmpty) {
+    if (deliveryList.any((e) =>
+        e.deliveryStatus != "Delivered" &&
+        e.deliveryStatus != "Not Delivered" &&
+        e.deliveryStatus != "Pending")) {
+      Get.to(
+        () => OnGoingDeliveryPage(
+          data: deliveryList.firstWhere(
+            (e) =>
+                e.deliveryStatus != "Delivered" &&
+                e.deliveryStatus != "Not Delivered" &&
+                e.deliveryStatus != "Pending",
+          ),
+          width: MediaQuery.of(context).size.width,
+        ),
+      );
+    } else {
+      AppWidgets.showSnackBar("No delivery found to deliver!!!");
+    }
+  } else {
+    AppWidgets.showSnackBar("No delivery found to deliver!!!");
   }
 }

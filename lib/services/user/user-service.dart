@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
 import 'package:sendeaze/constants/api-constants.dart';
@@ -14,8 +15,13 @@ import 'package:sendeaze/widgets/app-widgets.dart';
 import 'package:sendeaze/widgets/statistics-card.dart';
 
 class UserService {
-  Future<LoginResponse> doLogin(String email, String password) async {
-    final body = {"email": "$email", "password": password};
+  Future<LoginResponse> doLogin(String email, String password, token) async {
+    print(token);
+    final body = {
+      "email": "$email",
+      "password": password,
+      "firebase_token": token
+    };
     final httpJson = await ApiService().doPost(AppApi.USER_LOGIN, body);
     LoginResponse response = LoginResponse.fromJson(httpJson);
     if (response.error != null) {

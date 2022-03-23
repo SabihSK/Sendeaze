@@ -24,7 +24,7 @@ class SharedPref {
   getDataFromLocal(String _key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? value = prefs.getString(_key);
-    print("=>latlan $value");
+    // print("=>latlan $value");
     return value ?? "";
   }
 

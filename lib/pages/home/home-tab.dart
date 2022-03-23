@@ -12,7 +12,6 @@ import 'package:sendeaze/widgets/statistics-card.dart';
 class HomeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -45,7 +44,9 @@ class HomeTab extends StatelessWidget {
                             return OrderDetailCard(
                               data: snapshot.data?.data![index],
                               ontap: () => Get.to(() => DeliveryDetailsPage(
-                                  data: snapshot.data?.data![index])),
+                                    data: snapshot.data?.data![index],
+                                    width: MediaQuery.of(context).size.width,
+                                  )),
                             );
                           });
                     }),
