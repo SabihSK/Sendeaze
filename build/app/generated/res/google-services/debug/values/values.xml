@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">953125175835-1ut3lrt56dc24c2hqhajv7kokjglii2i.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://sendeaze-fc978-default-rtdb.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">953125175835</string>
+    <string name="google_api_key" translatable="false">AIzaSyCAqMA8Lmm2JFuy85XLt6H2CsEIVS7G-Pg</string>
+    <string name="google_app_id" translatable="false">1:953125175835:android:43ec6ecab2be48a8c72ebe</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCAqMA8Lmm2JFuy85XLt6H2CsEIVS7G-Pg</string>
+    <string name="google_storage_bucket" translatable="false">sendeaze-fc978.appspot.com</string>
+    <string name="project_id" translatable="false">sendeaze-fc978</string>
+</resources>

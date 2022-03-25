@@ -48,136 +48,145 @@ class _ScanDetailsState extends State<ScanDetails> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    AppBackButton(isTransparent: true),
-                    SizedBox(width: 15),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 25),
-                      child: Text(
-                        "scan_details".tr,
-                        style: Get.textTheme.headline6,
+      child: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      AppBackButton(isTransparent: true),
+                      SizedBox(width: 15),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 25),
+                        child: Text(
+                          "scan_details".tr,
+                          style: Get.textTheme.headline6,
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 30),
+                  Column(
+                    children: [
+                      //                      buildTextField(text: args['client_id'].toString()),
+                      buildTextField(text: argss.clientName),
+                      buildTextField(
+                          hint: "vendor_branch_name",
+                          text: argss.pickupLocation),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          buildOvalContainer(argss.boxesQuantity?.s ?? 0),
+                          buildOvalContainer(
+                              argss.boxesQuantity?.m ?? 0, "Medium"),
+                          buildOvalContainer(
+                              argss.boxesQuantity?.l ?? 0, "Large"),
+                        ],
                       ),
-                    )
-                  ],
-                ),
-                SizedBox(height: 30),
-                Column(
-                  children: [
-//                      buildTextField(text: args['client_id'].toString()),
-                    buildTextField(text: argss.clientName),
-                    buildTextField(
-                        hint: "vendor_branch_name", text: argss.pickupLocation),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildOvalContainer(argss.boxesQuantity?.s ?? 0),
-                        buildOvalContainer(
-                            argss.boxesQuantity?.m ?? 0, "Medium"),
-                        buildOvalContainer(
-                            argss.boxesQuantity?.l ?? 0, "Large"),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        "Update Box Status",
-                        style: Get.textTheme.caption!
-                            .copyWith(fontWeight: FontWeight.bold),
+                      SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    ListView.builder(
-                      itemBuilder: (context, index) {
-                        var infoItem = argss.info![index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "Box ID: ${infoItem.boxClientId}",
-                                    style: Get.textTheme.button!
-                                        .copyWith(color: AppColors.PRIMARY),
-                                  ),
-                                  Text(
-                                    widget.data?.clientName ?? "",
-                                    style: Get.textTheme.caption!
-                                        .copyWith(fontSize: 10),
-                                  ),
-                                ],
-                              ),
-                              Spacer(),
-                              CircularIconWidget(
-                                  color: infoItem.isSelected
-                                      ? Colors.greenAccent
-                                      : null,
-                                  onPressed: () {
-                                    if (infoItem.isSelected) {
-                                      // _idsStatuses.firstWhere(
-                                      //     (e) => e["id"] == infoItem.id);
-                                      _idsStatuses[index]["status"] =
-                                          "Not Delivered";
-                                    } else {
-                                      _idsStatuses[index]["status"] = "Picked";
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          "Update Box Status",
+                          style: Get.textTheme.caption!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          var infoItem = argss.info![index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "Box ID: ${infoItem.boxClientId}",
+                                      style: Get.textTheme.button!
+                                          .copyWith(color: AppColors.PRIMARY),
+                                    ),
+                                    Text(
+                                      widget.data?.clientName ?? "",
+                                      style: Get.textTheme.caption!
+                                          .copyWith(fontSize: 10),
+                                    ),
+                                  ],
+                                ),
+                                Spacer(),
+                                CircularIconWidget(
+                                    color: infoItem.isSelected
+                                        ? Colors.greenAccent
+                                        : null,
+                                    onPressed: () {
+                                      if (infoItem.isSelected) {
+                                        // _idsStatuses.firstWhere(
+                                        //     (e) => e["id"] == infoItem.id);
+                                        _idsStatuses[index]["status"] =
+                                            "Not Delivered";
+                                      } else {
+                                        _idsStatuses[index]["status"] =
+                                            "Picked";
 
-                                      // _idsStatuses.add({
-                                      //   "id": infoItem.id,
-                                      //   "status": "picked"
-                                      // });
-                                    }
-                                    infoItem.isSelected = !infoItem.isSelected;
-                                    setState(() {});
-                                    print(
-                                        "list ${_idsStatuses.length} \n$_idsStatuses");
-                                  },
-                                  iconData: Icons.done_outlined),
-                            ],
-                          ),
-                        );
-                      },
-                      shrinkWrap: true,
-                      itemCount: argss.info?.length ?? 0,
-                    ),
-                  ],
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                ),
-                ButtonWidget(
-                  btnText: "confirm".tr,
-                  onPressed: () {
-                    _showLoader = true;
-                    setState(() {});
-                    OrderService().markAsPicked(_idsStatuses).then(
-                      (value) {
-                        setState(() => _showLoader = false);
-                        if (value["error"] == null) {
-                          Future.delayed(Duration(seconds: 2), () {
-                            Get.offAllNamed(HomePage.route);
-                          });
-                        }
-                      },
-                    );
-                  },
-                )
-              ],
+                                        // _idsStatuses.add({
+                                        //   "id": infoItem.id,
+                                        //   "status": "picked"
+                                        // });
+                                      }
+                                      infoItem.isSelected =
+                                          !infoItem.isSelected;
+                                      setState(() {});
+                                      print(
+                                          "list ${_idsStatuses.length} \n$_idsStatuses");
+                                    },
+                                    iconData: Icons.done_outlined),
+                              ],
+                            ),
+                          );
+                        },
+                        shrinkWrap: true,
+                        itemCount: argss.info?.length ?? 0,
+                      ),
+                    ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                  ButtonWidget(
+                    btnText: "confirm".tr,
+                    onPressed: () {
+                      _showLoader = true;
+                      setState(() {});
+                      OrderService().markAsPicked(_idsStatuses).then(
+                        (value) {
+                          setState(() => _showLoader = false);
+                          if (value["error"] == null) {
+                            Future.delayed(Duration(seconds: 2), () {
+                              Get.offAllNamed(HomePage.route);
+                            });
+                          }
+                        },
+                      );
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  )
+                ],
+              ),
             ),
-          ),
-          if (_showLoader) Center(child: AppLoader())
-        ],
+            if (_showLoader) Center(child: AppLoader())
+          ],
+        ),
       ),
     );
   }
