@@ -39,8 +39,10 @@ class OnGoingDeliveryPage extends StatefulWidget {
   static String route = "/pages/delivery/ongoing-delivery-page";
   final OrderListData? data;
   final width;
+  final distance;
 
-  const OnGoingDeliveryPage({Key? key, this.data, required this.width})
+  const OnGoingDeliveryPage(
+      {Key? key, this.data, required this.width, this.distance})
       : super(key: key);
 
   @override
@@ -122,7 +124,11 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
     });
   }
 
+  late LocationData locationData;
   void setSourceAndDestinationIcons() async {
+    locationData = await location.getLocation();
+
+    ///
     lat = await SharedPref().getDataFromLocal('lat');
     long = await SharedPref().getDataFromLocal('lng');
     setState(() {});
@@ -254,6 +260,8 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                   ),
                   OrderInfoCard(
                     elapsedTime: _elapsedTime,
+                    distance: widget.distance,
+                    orderId: widget.data!.boxUniqueId!,
                   )
                 ],
               ),
@@ -672,7 +680,7 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                                 "You can not give your feedback again.") {
                           Get.offAllNamed(HomePage.route,
                               arguments: "rating Done");
-                          startDelivery(context);
+                          startDelivery(context, locationData);
                         }
                       });
                     },

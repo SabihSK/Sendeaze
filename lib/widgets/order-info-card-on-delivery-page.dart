@@ -3,8 +3,11 @@ import 'package:get/get.dart';
 
 class OrderInfoCard extends StatelessWidget {
   final Duration? elapsedTime;
+  final distance;
+  final orderId;
 
-  const OrderInfoCard({Key? key, this.elapsedTime}) : super(key: key);
+  const OrderInfoCard({Key? key, this.elapsedTime, this.distance, this.orderId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +23,9 @@ class OrderInfoCard extends StatelessWidget {
             ElapsedTimeText(elapsed: elapsedTime),
             // _infoCard(),
             VerticalDivider(),
-            _infoCard(title: "Travel Distance", value: "12 KM"),
+            _infoCard(title: "Travel Distance", value: "$distance KM"),
             VerticalDivider(),
-            _infoCard(title: "Order #", value: "53415"),
+            _infoCard(title: "Order #", value: "$orderId"),
           ],
         ),
       ),

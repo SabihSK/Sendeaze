@@ -10,6 +10,7 @@ class LocationUpdate {
 
     final dbrEf = FirebaseDatabase.instance.ref();
     late Location location = Location();
+    location.enableBackgroundMode(enable: true);
     double? lat;
     double? long;
     location.onLocationChanged.listen((LocationData cLoc) async {
