@@ -35,6 +35,8 @@
 	<string>Se Driver needs device location access for tracking live location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Se Driver needs device location access for tracking live location</string>
+	<key>UIBackgroundModes</key>
+	<string>location</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Se Driver needs Camera for scanning QR Codes</string>
 	<key>UILaunchStoryboardName</key>

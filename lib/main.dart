@@ -133,12 +133,12 @@ void main() async {
   //     }
   // });
 
-  String driverId =
-      await SharedPref().getDataFromLocal(SharedPrefConstants.driver_id);
+  // String driverId =
+  //     await SharedPref().getDataFromLocal(SharedPrefConstants.driver_id);
 
-  final dbrEf = FirebaseDatabase.instance.ref();
+  // final dbrEf = FirebaseDatabase.instance.ref();
 
-  await dbrEf.child("driverToken/$driverId").update({"driverToken": token});
+  // await dbrEf.child("driverToken/$driverId").update({"driverToken": token});
   // await dbrEf.child('driverToken/$driverId').set({"token"}).then((value) {
   //   print("---- data saved");
   // }).catchError((onError) {

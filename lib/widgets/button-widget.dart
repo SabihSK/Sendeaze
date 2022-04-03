@@ -22,10 +22,13 @@ class ButtonWidget extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         child: showLoader
-            ? CircularProgressIndicator(
-                backgroundColor: Colors.white
-              )
-            : Text(btnText ?? "next".tr),
+            ? CircularProgressIndicator(backgroundColor: Colors.white)
+            : btnText == "confirm".tr
+                ? Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: Text(btnText ?? "next".tr),
+                  )
+                : Text(btnText ?? "next".tr),
         style: ButtonStyle(
           elevation: MaterialStateProperty.all<double>(0),
           foregroundColor: MaterialStateProperty.all<Color>(Colors.white),

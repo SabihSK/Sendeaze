@@ -18,16 +18,22 @@ class DeliveryHistoryPage extends StatefulWidget {
 class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
   int currentIndex = 0;
 
-  Widget tabbar() {
+  Widget tabbar(width) {
     return TabBar(
       onTap: (index) {
         currentIndex = index;
         setState(() {});
       },
-      indicatorColor: AppColors.RED,
-      indicatorWeight: 0.0001,
+      indicatorColor: Colors.transparent,
+      // indicator: BoxDecoration(
+      //     // shape: EdgeInsets.only(left: 10, right: 10),
+      //     // borderRadius: BorderRadius.only(
+      //     //     topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+      //     color: AppColors.PRIMARY_BLUE),
       unselectedLabelColor: AppColors.GREY,
-      labelColor: AppColors.BLACK,
+      unselectedLabelStyle: TextStyle(),
+      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+      labelColor: AppColors.PRIMARY_BLUE,
       indicatorSize: TabBarIndicatorSize.label,
       labelPadding: EdgeInsets.only(top: 13, bottom: 20),
       tabs: [
@@ -40,6 +46,7 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -48,7 +55,7 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppBackButton(isTransparent: true),
-              tabbar(),
+              tabbar(width),
               // SizedBox(height: 15),
               AppDivider(),
               Expanded(

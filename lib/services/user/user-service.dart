@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
@@ -40,6 +41,14 @@ class UserService {
       // bool rememeber =
       //    await SharedPref().getBoolFromLocal("rememberMe");
       // print("rember me $rememeber");
+
+      //?---
+      final dbrEf = FirebaseDatabase.instance.ref();
+
+      await dbrEf
+          .child("driverToken/${response.data!.id}")
+          .update({"driverToken": token});
+
       Get.toNamed(HomePage.route);
     }
     return response;

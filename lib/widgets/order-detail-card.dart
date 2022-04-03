@@ -57,7 +57,7 @@ class OrderDetailCard extends StatelessWidget {
                             orderNumWidget(text: "Order #${data?.boxUniqueId}"),
                             orderNumWidget(
                                 icon: AssetConstants.DISTANCE_ICON,
-                                text: "Distance: ${data?.boxUniqueId}"),
+                                text: "Distance: ${data?.boxUniqueId} KM"),
                           ],
                         )
                       ],

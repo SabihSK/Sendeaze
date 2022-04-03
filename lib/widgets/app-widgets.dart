@@ -6,6 +6,7 @@ abstract class AppWidgets {
     Get.rawSnackbar(
       message: message ?? "Email and Password should not be empty!",
       backgroundColor: AppColors.PRIMARY,
+      duration: Duration(seconds: 1),
     );
   }
 }

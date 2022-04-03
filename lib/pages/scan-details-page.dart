@@ -134,7 +134,7 @@ class _ScanDetailsState extends State<ScanDetails> {
                                         // _idsStatuses.firstWhere(
                                         //     (e) => e["id"] == infoItem.id);
                                         _idsStatuses[index]["status"] =
-                                            "Not Delivered";
+                                            "Not Available";
                                       } else {
                                         _idsStatuses[index]["status"] =
                                             "Picked";
@@ -161,6 +161,9 @@ class _ScanDetailsState extends State<ScanDetails> {
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
+                  SizedBox(
+                    height: 30,
+                  ),
                   ButtonWidget(
                     btnText: "confirm".tr,
                     onPressed: () {
@@ -179,7 +182,7 @@ class _ScanDetailsState extends State<ScanDetails> {
                     },
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 30,
                   )
                 ],
               ),

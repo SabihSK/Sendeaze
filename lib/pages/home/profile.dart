@@ -214,9 +214,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               isCurrentPasswordChange = true;
               setState(() {});
             },
-            errorText: _currentPasswordController.text.length < 6 &&
+            errorText: _currentPasswordController.text.length < 1 &&
                     isCurrentPasswordChange
-                ? "Password length must be more than 6"
+                ? "Enter your current password"
                 : "",
           ),
           TextFieldWidget(
@@ -229,8 +229,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               setState(() {});
             },
             errorText:
-                _newPasswordController.text.length < 6 && isNewPasswordChange
-                    ? "Password length must be more than 6"
+                _newPasswordController.text.length < 1 && isNewPasswordChange
+                    ? "Enter your new password"
                     : "",
           ),
           TextFieldWidget(
@@ -242,9 +242,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               isConfirmPasswordChange = true;
               setState(() {});
             },
-            errorText: _confirmPasswordController.text.length < 6 &&
+            errorText: _confirmPasswordController.text.length < 1 &&
                     isConfirmPasswordChange
-                ? "Password length must be more than 6"
+                ? "Enter your confirm password"
                 : "",
           ),
           ButtonWidget(
