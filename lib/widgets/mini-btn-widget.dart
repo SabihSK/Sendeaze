@@ -40,9 +40,19 @@ class MiniButtonWidget extends StatelessWidget {
   }
 
   getColor() {
-    if (status!.toLowerCase().contains("not"))
+    print(status);
+    if (status == "Not Delivered") {
       return AppColors.RED.withOpacity(.8);
-    else
+    } else if (status == "Picked") {
+      return AppColors.CHIP_ORANGE.withOpacity(.8);
+    } else if (status == "Pending") {
+      return AppColors.CHIP_ORANGE.withOpacity(.8);
+    } else if (status == "Not Available") {
+      return AppColors.CHIP_GRAY.withOpacity(.8);
+    } else if (status == "On The Way") {
+      return AppColors.PRIMARY_BLUE.withOpacity(.8);
+    } else {
       return AppColors.GREEN_LIGHT.withOpacity(.5);
+    }
   }
 }

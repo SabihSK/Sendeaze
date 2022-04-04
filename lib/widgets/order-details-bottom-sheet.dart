@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sendeaze/constants/assets-constants.dart';
 import 'package:sendeaze/constants/color-constants.dart';
 import 'package:sendeaze/models/orders-list-response.dart';
@@ -77,23 +78,25 @@ class DetailsBottomSheet extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "delivery_time".tr,
-                      style: Get.textTheme.button,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      data?.pickedAt?.toIso8601String() ?? "20/03/  03:50 PM",
-                      style:
-                          Get.textTheme.button!.copyWith(color: AppColors.GREY),
-                    )
-                  ],
-                ),
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+                //     Text(
+                //       "delivery_time".tr,
+                //       style: Get.textTheme.button,
+                //     ),
+                //     SizedBox(
+                //       height: 10,
+                //     ),
+                //     Text(
+                //       DateFormat('dd-MM-yyyy hh:mm a').format(data?.pickedAt ??
+                //           DateTime.now().add(Duration(hours: 1))),
+                //       style:
+                //           Get.textTheme.button!.copyWith(color: AppColors.GREY),
+                //     )
+                //   ],
+                // ),
+
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [

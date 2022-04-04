@@ -180,7 +180,8 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
             GoogleMap(
               mapType: MapType.normal,
               zoomControlsEnabled: false,
-              myLocationEnabled: true, myLocationButtonEnabled: true,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
               compassEnabled: true,
               tiltGesturesEnabled: true,
               scrollGesturesEnabled: true,
@@ -250,8 +251,11 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppBackButton(
-                    marginArround: 0,
+                  // AppBackButton(
+                  //   marginArround: 0,
+                  // ),
+                  SizedBox(
+                    height: 15,
                   ),
                   AddressCard(
                     address: widget.data?.deliveryAddress,
@@ -551,6 +555,8 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                     length: 6,
                     obscureText: false,
                     animationType: AnimationType.fade,
+                    textStyle: TextStyle(color: AppColors.WHITE),
+                    keyboardType: TextInputType.number,
                     pinTheme: PinTheme(
                       inactiveFillColor: AppColors.BACKGROUND_LIGHT,
                       inactiveColor: AppColors.BACKGROUND_LIGHT,
@@ -566,7 +572,7 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                     animationDuration: Duration(milliseconds: 300),
                     backgroundColor: AppColors.WHITE,
                     enableActiveFill: true,
-//                    controller: textEditingController,
+                    //controller: textEditingController,
                     onCompleted: (v) {
                       print("Completed $v");
                       setState(() {
@@ -605,6 +611,9 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                                 // Navigator.pop(context);
                                 // Navigator.of(context, rootNavigator: true)
                                 //     .pop('dialog');
+                                Navigator.pop(context);
+
+                                // Navigator.of(context).pop();
                                 ratingBarDialog();
                               }
                             });

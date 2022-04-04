@@ -32,6 +32,8 @@ class DeliveryDetailsPage extends StatefulWidget {
 }
 
 class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
+// 24.950973, 67.080255
+
   Completer<GoogleMapController> _controller = Completer();
   StreamController<ErrorAnimationType> errorController =
       StreamController<ErrorAnimationType>();
@@ -142,6 +144,7 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
     );
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+
     // do this inside the setState() so Flutter gets notified
     // that a widget update is due
     setState(() {
@@ -173,8 +176,6 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
           bearing: CAMERA_BEARING);
     }
 
-    print("=>check $polylineCoordinates");
-
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -198,9 +199,15 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
                     initialCameraPosition: initialCameraPosition,
                     polylines: _polylines,
                     rotateGesturesEnabled: true,
-                    onMapCreated: (GoogleMapController controller) {
+                    onMapCreated: (controller) async {
                       _controller.complete(controller);
                       showPinsOnMap();
+                      await updateCameraLocation(
+                        LatLng(double.parse(lat!), double.parse(long!)),
+                        LatLng(double.parse(widget.data!.deliveryLongitude!),
+                            double.parse(widget.data!.deliveryLatitude!)),
+                        controller,
+                      );
                     },
                   ),
                 ),
@@ -213,5 +220,48 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
         ),
       ),
     );
+  }
+}
+
+//?--- updateCameraLocation ---
+
+Future<void> updateCameraLocation(
+  LatLng source,
+  LatLng destination,
+  GoogleMapController mapController,
+) async {
+  // ignore: unnecessary_null_comparison
+  if (mapController == null) return;
+
+  LatLngBounds bounds;
+
+  if (source.latitude > destination.latitude &&
+      source.longitude > destination.longitude) {
+    bounds = LatLngBounds(southwest: destination, northeast: source);
+  } else if (source.longitude > destination.longitude) {
+    bounds = LatLngBounds(
+        southwest: LatLng(source.latitude, destination.longitude),
+        northeast: LatLng(destination.latitude, source.longitude));
+  } else if (source.latitude > destination.latitude) {
+    bounds = LatLngBounds(
+        southwest: LatLng(destination.latitude, source.longitude),
+        northeast: LatLng(source.latitude, destination.longitude));
+  } else {
+    bounds = LatLngBounds(southwest: source, northeast: destination);
+  }
+
+  CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
+
+  return checkCameraLocation(cameraUpdate, mapController);
+}
+
+Future<void> checkCameraLocation(
+    CameraUpdate cameraUpdate, GoogleMapController mapController) async {
+  mapController.animateCamera(cameraUpdate);
+  LatLngBounds l1 = await mapController.getVisibleRegion();
+  LatLngBounds l2 = await mapController.getVisibleRegion();
+
+  if (l1.southwest.latitude == -90 || l2.southwest.latitude == -90) {
+    return checkCameraLocation(cameraUpdate, mapController);
   }
 }
