@@ -94,6 +94,10 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
   @override
   void initState() {
     super.initState();
+    // set custom marker pins
+    Future.delayed(Duration.zero, () {
+      setSourceAndDestinationIcons();
+    });
     _ticker = this.createTicker((elapsed) {
       setState(() {
         _elapsedTime = elapsed;
@@ -106,8 +110,6 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
     // create an instance of Location
     location = Location();
     polylinePoints = PolylinePoints();
-    // set custom marker pins
-    setSourceAndDestinationIcons();
     // set the initial location
     setInitialLocation();
 
@@ -139,6 +141,7 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
     destinationIcon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(devicePixelRatio: widget.width * 0.25),
         'assets/destination_map_marker.png');
+    setState(() {});
   }
 
   void setInitialLocation() async {
@@ -163,7 +166,7 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
       zoom: CAMERA_ZOOM,
       tilt: CAMERA_TILT,
       bearing: CAMERA_BEARING,
-      target: LatLng(double.parse(lat!), double.parse(long!)),
+      target: LatLng((23.8859), (45.0792)),
     );
     if (lat != null && long != null) {
       initialCameraPosition = CameraPosition(
@@ -302,12 +305,16 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
     _markers.add(Marker(
         markerId: MarkerId('sourcePin'),
         position: pinPosition,
-        icon: sourceIcon));
+        icon: await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(devicePixelRatio: widget.width * 0.25),
+            'assets/driving_pin.png')));
     // destination pin
     _markers.add(Marker(
         markerId: MarkerId('destPin'),
         position: destPosition,
-        icon: destinationIcon));
+        icon: await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(devicePixelRatio: widget.width * 0.25),
+            'assets/destination_map_marker.png')));
     // set the route lines on the map from source to destination
     // for more info follow this tutorial
     setPolylines();
@@ -594,29 +601,35 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                       : ButtonWidget(
                           btnColor: AppColors.GREEN,
                           onPressed: () {
-                            state(() {
-                              showLoader = true;
-                            });
-                            OrderService()
-                                .updateDeliveryStatus(
-                                    widget.data!.id!, "Delivered",
-                                    minutes: _elapsedTime.inMinutes,
-                                    secretCode: pinValue)
-                                .then((value) {
+                            if (pinValue!.length == 6) {
+                              state(() {
+                                showLoader = true;
+                              });
+                              OrderService()
+                                  .updateDeliveryStatus(
+                                      widget.data!.id!, "Delivered",
+                                      minutes: _elapsedTime.inMinutes,
+                                      secretCode: pinValue)
+                                  .then((value) {
+                                setState(() {
+                                  showLoader = false;
+                                });
+                                if (value["error"] == null) {
+                                  // Get.back();
+                                  // Navigator.pop(context);
+                                  // Navigator.of(context, rootNavigator: true)
+                                  //     .pop('dialog');
+                                  Navigator.pop(context);
+
+                                  // Navigator.of(context).pop();
+                                  ratingBarDialog();
+                                }
+                              });
+                            } else {
                               setState(() {
                                 showLoader = false;
                               });
-                              if (value["error"] == null) {
-                                // Get.back();
-                                // Navigator.pop(context);
-                                // Navigator.of(context, rootNavigator: true)
-                                //     .pop('dialog');
-                                Navigator.pop(context);
-
-                                // Navigator.of(context).pop();
-                                ratingBarDialog();
-                              }
-                            });
+                            }
                           },
                           btnText: "submit".tr,
                         ),
@@ -735,13 +748,13 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
     });
   }
 
-  Future<dynamic> showBottomSheet(BuildContext context) {
+  Future<dynamic> showBottomSheet(BuildContext context) async {
+    String driverName =
+        await SharedPref().getDataFromLocal(SharedPrefConstants.NAME);
     return showModalBottomSheet(
         context: context,
         builder: (context) {
-          return DetailsBottomSheet(
-            data: widget.data,
-          );
+          return DetailsBottomSheet(data: widget.data, driverName: driverName);
         },
         backgroundColor: Colors.transparent,
         clipBehavior: Clip.antiAlias);

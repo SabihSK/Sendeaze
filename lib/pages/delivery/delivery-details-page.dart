@@ -50,6 +50,8 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
 
   Set<Polyline> _polylines = Set<Polyline>();
 
+  String? driverNameVariable;
+
   @override
   void dispose() {
     errorController.close();
@@ -77,6 +79,10 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
     destinationIcon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(devicePixelRatio: widget.width * 0.25),
         'assets/destination_map_marker.png');
+    driverNameVariable =
+        await SharedPref().getDataFromLocal(SharedPrefConstants.NAME);
+    print("=>driverName123 $driverNameVariable");
+    setState(() {});
   }
 
   void showPinsOnMap() async {
@@ -85,12 +91,14 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
 
     // get a LatLng for the source location
     // from the LocationData currentLocation object
-    var pinPosition = LatLng(double.parse(lat!), double.parse(long!));
+    var pinPosition = LatLng(
+        double.parse(await SharedPref().getDataFromLocal('lat')),
+        double.parse(await SharedPref().getDataFromLocal('lng')));
     // var pinPosition =
     //     LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
     // get a LatLng out of the LocationData object
-    var destPosition = LatLng(double.parse(widget.data!.deliveryLongitude!),
-        double.parse(widget.data!.deliveryLatitude!));
+    var destPosition = LatLng(double.parse(widget.data!.deliveryLatitude!),
+        double.parse(widget.data!.deliveryLongitude!));
     // var destPosition =
     //     LatLng(destinationLocation.latitude!, destinationLocation.longitude!);
     // add the initial source location pin
@@ -124,7 +132,7 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
       // });
       setState(() {
         _polylines.add(Polyline(
-            width: 5, // set the width of the polylines
+            width: 3, // set the width of the polylines
             polylineId: PolylineId("poly"),
             color: Color.fromARGB(255, 40, 122, 198),
             points: polylineCoordinates)); //PolylineController().decode()
@@ -166,7 +174,7 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
       zoom: 6,
       tilt: CAMERA_TILT,
       bearing: CAMERA_BEARING,
-      target: LatLng(double.parse(lat!), double.parse(long!)),
+      target: LatLng((23.8859), (45.0792)),
     );
     if (lat != null && long != null) {
       initialCameraPosition = CameraPosition(
@@ -184,7 +192,7 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
             Column(
               children: [
                 Container(
-                  height: Get.height * .65,
+                  height: Get.height * .575,
                   child: GoogleMap(
                     mapType: MapType.normal,
                     zoomControlsEnabled: false,
@@ -204,8 +212,8 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
                       showPinsOnMap();
                       await updateCameraLocation(
                         LatLng(double.parse(lat!), double.parse(long!)),
-                        LatLng(double.parse(widget.data!.deliveryLongitude!),
-                            double.parse(widget.data!.deliveryLatitude!)),
+                        LatLng(double.parse(widget.data!.deliveryLatitude!),
+                            double.parse(widget.data!.deliveryLongitude!)),
                         controller,
                       );
                     },
@@ -215,7 +223,11 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
               ],
             ),
             AppBackButton(),
-            DetailsBottomSheet(data: widget.data),
+            DetailsBottomSheet(
+              data: widget.data,
+              driverName:
+                  " SharedPref().getDataFromLocal(SharedPrefConstants.NAME)",
+            ),
           ],
         ),
       ),
@@ -250,7 +262,7 @@ Future<void> updateCameraLocation(
     bounds = LatLngBounds(southwest: source, northeast: destination);
   }
 
-  CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
+  CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 70);
 
   return checkCameraLocation(cameraUpdate, mapController);
 }

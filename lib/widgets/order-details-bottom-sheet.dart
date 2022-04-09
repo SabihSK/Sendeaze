@@ -8,8 +8,10 @@ import 'package:sendeaze/widgets/mini-btn-widget.dart';
 
 class DetailsBottomSheet extends StatelessWidget {
   final OrderListData? data;
+  final String driverName;
 
-  const DetailsBottomSheet({Key? key, this.data}) : super(key: key);
+  const DetailsBottomSheet({Key? key, this.data, required this.driverName})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +110,7 @@ class DetailsBottomSheet extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      "Jacob Jones",
+                      driverName,
                       style:
                           Get.textTheme.button!.copyWith(color: AppColors.GREY),
                     )

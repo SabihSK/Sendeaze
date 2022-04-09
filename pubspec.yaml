@@ -13,24 +13,24 @@ dependencies:
   dio: ^4.0.4
   firebase_core: ^1.13.1
   firebase_database: ^9.0.8
-  firebase_messaging: ^11.2.11
+  firebase_messaging: ^11.2.12
   flutter:
     sdk: flutter
-  flutter_exif_rotation: ^0.4.3
+  flutter_exif_rotation: ^0.5.1
   flutter_polyline_points: ^1.0.0
   flutter_rating_bar: ^4.0.0
-  flutter_svg: 0.22.0
+  flutter_svg: ^1.0.3
   geolocator: ^8.2.0
-  get: 4.3.8
+  get: ^4.6.1
   get_storage: ^2.0.3
   google_maps_flutter: ^2.0.9
   image_picker: ^0.8.4+1
   intl: ^0.17.0
   location: ^4.3.0
   pin_code_fields: ^7.3.0
-  qr_code_scanner: ^0.6.1
+  qr_code_scanner: ^0.7.0
   shared_preferences: ^2.0.13
-  syncfusion_flutter_calendar: ^19.4.52
+  syncfusion_flutter_calendar: ^20.1.47
   url_launcher: ^6.0.20
   wakelock: ^0.6.1+2
 

@@ -250,7 +250,7 @@ Future<void> startDelivery(context, locationData) async {
         polylineCoordinates[i + 1].latitude,
         polylineCoordinates[i + 1].longitude);
   }
-  print("=>totalDistance $totalDistance");
+  print("OnGoingDeliveryPage $totalDistance");
 
   if (deliveryList != null && deliveryList.isNotEmpty) {
     if (deliveryList.any((e) =>

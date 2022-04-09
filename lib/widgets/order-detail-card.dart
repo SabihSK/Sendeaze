@@ -55,9 +55,6 @@ class OrderDetailCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             orderNumWidget(text: "Order #${data?.boxUniqueId}"),
-                            orderNumWidget(
-                                icon: AssetConstants.DISTANCE_ICON,
-                                text: "Distance: ${data?.boxUniqueId} KM"),
                           ],
                         )
                       ],
