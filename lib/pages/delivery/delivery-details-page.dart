@@ -50,11 +50,17 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
 
   Set<Polyline> _polylines = Set<Polyline>();
 
-  String? driverNameVariable;
+  late String? driverNameVariable = "";
 
   @override
   void dispose() {
     errorController.close();
+    polylineCoordinates.clear();
+    _markers.clear();
+    lat = null;
+    long = null;
+    _polylines.clear();
+    driverNameVariable = "";
     super.dispose();
   }
 
@@ -79,6 +85,7 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
     destinationIcon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(devicePixelRatio: widget.width * 0.25),
         'assets/destination_map_marker.png');
+
     driverNameVariable =
         await SharedPref().getDataFromLocal(SharedPrefConstants.NAME);
     print("=>driverName123 $driverNameVariable");
@@ -135,7 +142,7 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
             width: 3, // set the width of the polylines
             polylineId: PolylineId("poly"),
             color: Color.fromARGB(255, 40, 122, 198),
-            points: polylineCoordinates)); //PolylineController().decode()
+            points: polylineCoordinates));
       });
     }
   }
@@ -208,6 +215,8 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
                     polylines: _polylines,
                     rotateGesturesEnabled: true,
                     onMapCreated: (controller) async {
+                      driverNameVariable = await SharedPref()
+                          .getDataFromLocal(SharedPrefConstants.NAME);
                       _controller.complete(controller);
                       showPinsOnMap();
                       await updateCameraLocation(
@@ -223,11 +232,12 @@ class _DeliveryDetailsPageState extends State<DeliveryDetailsPage> {
               ],
             ),
             AppBackButton(),
-            DetailsBottomSheet(
-              data: widget.data,
-              driverName:
-                  " SharedPref().getDataFromLocal(SharedPrefConstants.NAME)",
-            ),
+            driverNameVariable != null
+                ? DetailsBottomSheet(
+                    data: widget.data,
+                    driverName: driverNameVariable,
+                  )
+                : SizedBox(),
           ],
         ),
       ),

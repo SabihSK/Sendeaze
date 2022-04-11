@@ -39,15 +39,16 @@ class OnGoingDeliveryPage extends StatefulWidget {
   static String route = "/pages/delivery/ongoing-delivery-page";
   final OrderListData? data;
   final width;
-  final distance;
 
-  const OnGoingDeliveryPage(
-      {Key? key, this.data, required this.width, this.distance})
+  OnGoingDeliveryPage({Key? key, this.data, required this.width})
       : super(key: key);
 
   @override
   _OnGoingDeliveryPageState createState() => _OnGoingDeliveryPageState();
 }
+
+String? driverName;
+String? distance = "0.0";
 
 class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
     with SingleTickerProviderStateMixin {
@@ -65,6 +66,7 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
   Set<Marker> _markers = Set<Marker>();
   String? lat;
   String? long;
+  GoogleMapController? mapController;
 
   Map<PolylineId, Polyline> polylines = {};
   // for my custom marker pins
@@ -84,16 +86,27 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
 
   var _reviews = "";
 
+  bool isPageLoaded = true;
+
   String? pinValue;
   @override
   void dispose() {
     _ticker.dispose();
+    mapController!.dispose();
+    polylineCoordinates.clear();
+    _markers.clear();
+    lat = null;
+    long = null;
+    polylines.clear();
+    _polylines.clear();
+    isPageLoaded = true;
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+
     // set custom marker pins
     Future.delayed(Duration.zero, () {
       setSourceAndDestinationIcons();
@@ -115,15 +128,16 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
 
     // subscribe to changes in the user's location
     // by "listening" to the location's onLocationChanged event
-    location.onLocationChanged.listen((LocationData cLoc) async {
-      // cLoc contains the lat and long of the
-      // current user's position in real time,
-      // so we're holding on to it
-//      currentLocation = cLoc;
-      lat = cLoc.latitude.toString();
-      long = cLoc.longitude.toString();
-      updatePinOnMap(cLoc.latitude, cLoc.longitude);
-    });
+//     location.onLocationChanged.listen((LocationData cLoc) async {
+//       // cLoc contains the lat and long of the
+//       // current user's position in real time,
+//       // so we're holding on to it
+// //      currentLocation = cLoc;
+//       lat = cLoc.latitude.toString();
+//       long = cLoc.longitude.toString();
+//       updatePinOnMap(cLoc.latitude, cLoc.longitude);
+//     });
+    showPinsOnMap();
   }
 
   late LocationData locationData;
@@ -176,106 +190,118 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
           bearing: CAMERA_BEARING);
     }
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            GoogleMap(
-              mapType: MapType.normal,
-              zoomControlsEnabled: false,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              compassEnabled: true,
-              tiltGesturesEnabled: true,
-              scrollGesturesEnabled: true,
-              zoomGesturesEnabled: true,
-              markers: _markers,
-              initialCameraPosition: initialCameraPosition,
-              polylines: _polylines,
-//          polylines: Set<Polyline>.of(polylines.values),
-              onMapCreated: (GoogleMapController controller) {
-                // controller.animateCamera(
-                //   CameraUpdate.newCameraPosition(
-                //     CameraPosition(
-                //       zoom: 7,
-                //       target: LatLng((double.parse(lat!)), double.parse(long!)),
-                //     ),
-                //   ),
-                // );
-                _controller.complete(controller);
-                // my map has completed being created;
-                // i'm ready to show the pins on the map
-                showPinsOnMap();
-              },
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      _makePhoneCall(widget.data!.customerNumber!);
-                    },
-                    child: Image.asset(AssetConstants.CALL),
-                    mini: true,
-                    heroTag: UniqueKey(),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      await launch(
-                          "https://www.google.com/maps/search/${widget.data!.pickupLatitude!},${widget.data!.pickupLongitude!}");
-                    },
-                    heroTag: UniqueKey(),
-                    child: Image.asset(AssetConstants.DIRECTIONS),
-                    mini: true,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: ButtonWidget(
-                    btnColor: AppColors.GREEN,
-                    btnText: "finish_delivery".tr,
-                    onPressed: () {
-                      finishDeliveryDialog();
-                    },
-                  ),
-                ),
-                cancelBtn(),
-              ],
-            ),
-            Positioned(
-              top: 0,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: isPageLoaded
+          ? SafeArea(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : SafeArea(
+              child: Stack(
+                alignment: Alignment.bottomCenter,
                 children: [
-                  // AppBackButton(
-                  //   marginArround: 0,
-                  // ),
-                  SizedBox(
-                    height: 15,
+                  GoogleMap(
+                    mapType: MapType.normal,
+                    zoomControlsEnabled: false,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: false,
+                    compassEnabled: true,
+                    tiltGesturesEnabled: true,
+                    scrollGesturesEnabled: true,
+                    zoomGesturesEnabled: true,
+                    markers: _markers,
+                    initialCameraPosition: initialCameraPosition,
+                    polylines: _polylines,
+//          polylines: Set<Polyline>.of(polylines.values),
+                    onMapCreated: (controller) {
+                      setState(() {
+                        mapController = controller;
+                      });
+                      // controller.animateCamera(
+                      //   CameraUpdate.newCameraPosition(
+                      //     CameraPosition(
+                      //       zoom: 7,
+                      //       target: LatLng((double.parse(lat!)), double.parse(long!)),
+                      //     ),
+                      //   ),
+                      // );
+                      _controller.complete(mapController);
+                      // my map has completed being created;
+                      // i'm ready to show the pins on the map
+                    },
                   ),
-                  AddressCard(
-                    address: widget.data?.deliveryAddress,
-                    customer: widget.data?.customerName,
-                    onArrowTap: () => showBottomSheet(context),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            _makePhoneCall(widget.data!.customerNumber!);
+                          },
+                          child: Image.asset(AssetConstants.CALL),
+                          mini: true,
+                          heroTag: UniqueKey(),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: FloatingActionButton(
+                          onPressed: () async {
+                            await launch(
+                                "https://www.google.com/maps/search/${widget.data!.deliveryLatitude!},${widget.data!.deliveryLongitude!}");
+                          },
+                          heroTag: UniqueKey(),
+                          child: Image.asset(AssetConstants.DIRECTIONS),
+                          mini: true,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        child: ButtonWidget(
+                          btnColor: AppColors.GREEN,
+                          btnText: "finish_delivery".tr,
+                          onPressed: () {
+                            finishDeliveryDialog();
+                          },
+                        ),
+                      ),
+                      cancelBtn(),
+                    ],
                   ),
-                  OrderInfoCard(
-                    elapsedTime: _elapsedTime,
-                    distance: widget.distance,
-                    orderId: widget.data!.boxUniqueId!,
-                  )
+                  Positioned(
+                    top: 0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // AppBackButton(
+                        //   marginArround: 0,
+                        // ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        AddressCard(
+                          address: widget.data?.deliveryAddress,
+                          customer: widget.data?.customerName,
+                          onArrowTap: () async {
+                            driverName = await SharedPref()
+                                .getDataFromLocal(SharedPrefConstants.NAME);
+                            showBottomSheet(context, driverName);
+                          },
+                        ),
+                        OrderInfoCard(
+                          elapsedTime: _elapsedTime,
+                          distance: distance,
+                          orderId: widget.data!.boxUniqueId!,
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -297,8 +323,8 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
     // var pinPosition =
     //     LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
     // get a LatLng out of the LocationData object
-    var destPosition = LatLng(double.parse(widget.data!.deliveryLongitude!),
-        double.parse(widget.data!.deliveryLatitude!));
+    var destPosition = LatLng(double.parse(widget.data!.deliveryLatitude!),
+        double.parse(widget.data!.deliveryLongitude!));
     // var destPosition =
     //     LatLng(destinationLocation.latitude!, destinationLocation.longitude!);
     // add the initial source location pin
@@ -349,6 +375,22 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
             polylineId: PolylineId("poly"),
             color: Color.fromARGB(255, 40, 122, 198),
             points: polylineCoordinates));
+      });
+
+//polulineCoordinates is the List of longitute and latidtude.
+      double totalDistance = 0;
+      for (var i = 0; i < polylineCoordinates.length - 1; i++) {
+        totalDistance += calculateDistance(
+            polylineCoordinates[i].latitude,
+            polylineCoordinates[i].longitude,
+            polylineCoordinates[i + 1].latitude,
+            polylineCoordinates[i + 1].longitude);
+      }
+      print(
+          "OnGoingDeliveryPage $totalDistance as ${totalDistance.toStringAsFixed(2)}");
+      setState(() {
+        distance = totalDistance.toStringAsFixed(2);
+        isPageLoaded = false;
       });
     }
   }
@@ -543,9 +585,11 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                     children: [
                       ElapsedTimeText(elapsed: _elapsedTime),
                       VerticalDivider(),
-                      _infoCard(title: "Travel Dis.", value: "5m"),
+                      _infoCard(title: "Travel Dis.", value: "$distance"),
                       VerticalDivider(),
-                      _infoCard(title: "Order #", value: "53415"),
+                      _infoCard(
+                          title: "Order #",
+                          value: "${widget.data!.boxUniqueId!}"),
                     ],
                   ),
                   SizedBox(height: 8),
@@ -609,12 +653,14 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                                   .updateDeliveryStatus(
                                       widget.data!.id!, "Delivered",
                                       minutes: _elapsedTime.inMinutes,
-                                      secretCode: pinValue)
+                                      secretCode: pinValue,
+                                      distance: distance)
                                   .then((value) {
-                                setState(() {
+                                state(() {
                                   showLoader = false;
                                 });
                                 if (value["error"] == null) {
+                                  updateDeliveryList();
                                   // Get.back();
                                   // Navigator.pop(context);
                                   // Navigator.of(context, rootNavigator: true)
@@ -667,22 +713,25 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                         .copyWith(fontWeight: FontWeight.w500),
                   ),
                   SizedBox(height: 15),
-                  RatingBar.builder(
-                    initialRating: 3,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    unratedColor: AppColors.BACKGROUND_LIGHT,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
+                  Center(
+                    child: RatingBar.builder(
+                      itemSize: 35,
+                      initialRating: 3,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
+                      itemCount: 5,
+                      unratedColor: AppColors.BACKGROUND_LIGHT,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (rating) {
+                        _rating = rating;
+                        print(rating);
+                      },
                     ),
-                    onRatingUpdate: (rating) {
-                      _rating = rating;
-                      print(rating);
-                    },
                   ),
                   SizedBox(height: 15),
                   ButtonWidget(
@@ -702,7 +751,7 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
                                 "You can not give your feedback again.") {
                           Get.offAllNamed(HomePage.route,
                               arguments: "rating Done");
-                          startDelivery(context, locationData);
+                          // startDelivery(context, locationData);
                         }
                       });
                     },
@@ -748,13 +797,15 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
     });
   }
 
-  Future<dynamic> showBottomSheet(BuildContext context) async {
-    String driverName =
-        await SharedPref().getDataFromLocal(SharedPrefConstants.NAME);
+  Future<dynamic> showBottomSheet(BuildContext context, driverName) async {
+    driverName = await SharedPref().getDataFromLocal(SharedPrefConstants.NAME);
     return showModalBottomSheet(
         context: context,
         builder: (context) {
-          return DetailsBottomSheet(data: widget.data, driverName: driverName);
+          return DetailsBottomSheet(
+            data: widget.data,
+            driverName: driverName,
+          );
         },
         backgroundColor: Colors.transparent,
         clipBehavior: Clip.antiAlias);

@@ -33,6 +33,8 @@ class HomePage extends StatefulWidget {
 
 DeliveriesController _deliveriesController = DeliveriesController();
 var deliveryList;
+String? driverNameVariable;
+double? width;
 
 class _HomePageState extends State<HomePage> {
   int _selectedIdx = 0;
@@ -54,6 +56,8 @@ class _HomePageState extends State<HomePage> {
   late LocationData locationData;
   getData() async {
     locationData = await location.getLocation();
+    driverNameVariable =
+        await SharedPref().getDataFromLocal(SharedPrefConstants.NAME);
 
 //   double? lat = 0.0;
 //   double? long = 0.0;
@@ -95,6 +99,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    width = MediaQuery.of(context).size.width;
     // if (Get.mediaQuery.viewInsets.bottom == 0.0) {
     //   setState(() {});
     // }
@@ -250,7 +255,8 @@ Future<void> startDelivery(context, locationData) async {
         polylineCoordinates[i + 1].latitude,
         polylineCoordinates[i + 1].longitude);
   }
-  print("OnGoingDeliveryPage $totalDistance");
+  print(
+      "OnGoingDeliveryPage $totalDistance as ${totalDistance.toStringAsFixed(2)}");
 
   if (deliveryList != null && deliveryList.isNotEmpty) {
     if (deliveryList.any((e) =>
@@ -265,8 +271,7 @@ Future<void> startDelivery(context, locationData) async {
                 e.deliveryStatus != "Not Delivered" &&
                 e.deliveryStatus != "Pending",
           ),
-          width: MediaQuery.of(context).size.width,
-          distance: totalDistance.toStringAsFixed(2),
+          width: width,
         ),
       );
     } else {
@@ -275,4 +280,9 @@ Future<void> startDelivery(context, locationData) async {
   } else {
     AppWidgets.showSnackBar("No delivery found to deliver!!!");
   }
+}
+
+updateDeliveryList() async {
+  await _deliveriesController.getDeliveriesList();
+  deliveryList = _deliveriesController.deliveriesList.data;
 }

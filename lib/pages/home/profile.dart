@@ -396,6 +396,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     File rotatedImage =
         await FlutterExifRotation.rotateImage(path: pickedFile.path);
     fileUrl = File(rotatedImage.path);
+    print("$fileUrl & ${this.profilePic}");
     this.profilePic = rotatedImage.path;
     setState(() {});
   }

@@ -88,7 +88,7 @@ class OrderService {
   }
 
   Future<dynamic> updateDeliveryStatus(int? deliveryId, String status,
-      {String? reason, secretCode, num? minutes}) async {
+      {String? reason, secretCode, num? minutes, distance}) async {
     String token =
         await SharedPref().getDataFromLocal(SharedPrefConstants.token);
     String driverId =
@@ -101,6 +101,7 @@ class OrderService {
       "secret_code": secretCode,
       "not_delivered_reason": reason,
       "total_delivery_time": minutes,
+      "total_distance_travelled_km": distance
     };
     final httpJson =
         await ApiService().doPost(AppApi.UPDATE_DELIVERY_STATUS, body);

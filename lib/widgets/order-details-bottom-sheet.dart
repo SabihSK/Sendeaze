@@ -3,14 +3,16 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sendeaze/constants/assets-constants.dart';
 import 'package:sendeaze/constants/color-constants.dart';
+import 'package:sendeaze/constants/shared-pref-constant.dart';
 import 'package:sendeaze/models/orders-list-response.dart';
+import 'package:sendeaze/services/common/shared-preference-service.dart';
 import 'package:sendeaze/widgets/mini-btn-widget.dart';
 
 class DetailsBottomSheet extends StatelessWidget {
   final OrderListData? data;
-  final String driverName;
+  final driverName;
 
-  const DetailsBottomSheet({Key? key, this.data, required this.driverName})
+  DetailsBottomSheet({Key? key, this.data, required this.driverName})
       : super(key: key);
 
   @override
@@ -100,7 +102,7 @@ class DetailsBottomSheet extends StatelessWidget {
                 // ),
 
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "received_by".tr,
