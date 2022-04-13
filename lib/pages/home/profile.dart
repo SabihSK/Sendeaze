@@ -147,6 +147,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               enabled: false,
               hintText: "vehicle_number".tr,
               controller: _vehicleNumberController,
+              // initialValue: data.mobileNum,
               icon: AssetConstants.CAR_ICON,
             ),
             // SizedBox(height: 20),
@@ -188,6 +189,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               AppBackButton(
                 isTransparent: true,
                 onPressed: () {
+                  FocusScope.of(context).unfocus();
                   _pageController.previousPage(
                     duration: Duration(seconds: 1),
                     curve: Curves.easeOutCubic,
@@ -229,8 +231,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               setState(() {});
             },
             errorText:
-                _newPasswordController.text.length < 1 && isNewPasswordChange
-                    ? "Enter your new password"
+                _newPasswordController.text.length < 6 && isNewPasswordChange
+                    ? "Password length must be more than 6"
                     : "",
           ),
           TextFieldWidget(
@@ -242,9 +244,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               isConfirmPasswordChange = true;
               setState(() {});
             },
-            errorText: _confirmPasswordController.text.length < 1 &&
+            errorText: _confirmPasswordController.text.length < 6 &&
                     isConfirmPasswordChange
-                ? "Enter your confirm password"
+                ? "Password length must be more than 6"
                 : "",
           ),
           ButtonWidget(
@@ -255,7 +257,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               //   duration: Duration(seconds: 1),
               //   curve: Curves.easeInOut,
               // );
-              if (_currentPasswordController.text.length > 5 &&
+              if (_newPasswordController.text !=
+                  _confirmPasswordController.text) {
+                AppWidgets.showSnackBar("Your password is not matching!");
+              } else if (_currentPasswordController.text.isEmpty &&
+                  _newPasswordController.text.isEmpty &&
+                  _confirmPasswordController.text.isEmpty) {
+                AppWidgets.showSnackBar("Please enter all fields");
+              } else if (_currentPasswordController.text.length > 5 &&
                   _newPasswordController.text.length > 5 &&
                   _confirmPasswordController.text.length > 5) {
                 showLoader = true;
@@ -264,13 +273,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     .changePassword(_currentPasswordController.text,
                         _newPasswordController.text)
                     .then((value) => setState(() => showLoader = false));
-              } else if (_newPasswordController.text !=
-                  _confirmPasswordController.text) {
-                AppWidgets.showSnackBar("Your password is not matching!");
-              } else if (_currentPasswordController.text.isEmpty &&
-                  _newPasswordController.text.isEmpty &&
-                  _confirmPasswordController.text.isEmpty) {
-                AppWidgets.showSnackBar("Please enter all fields");
               } else {
                 AppWidgets.showSnackBar("Password length must be more than 6");
               }

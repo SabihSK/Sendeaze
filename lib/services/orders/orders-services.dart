@@ -55,7 +55,7 @@ class OrderService {
         await ApiService().doPost(AppApi.TODAY_DELIVERIES_LIST, body);
     OrderListResponse response = OrderListResponse.fromJson(httpJson);
     if (response.error != null) {
-      AppWidgets.showSnackBar(response.error.toString());
+      print(response.error.toString());
     }
     if (response.code != null && response.code == "200") {
       deliveriesData = response;
