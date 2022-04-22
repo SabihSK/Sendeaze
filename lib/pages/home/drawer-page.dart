@@ -19,6 +19,8 @@ class AppDrawer extends StatefulWidget {
 
 class _AppDrawerState extends State<AppDrawer> {
   var name = "";
+  String driverImage = "";
+  bool isDataLoadel = false;
 
   Widget headerItem(BuildContext context) {
     return Container(
@@ -32,17 +34,31 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Widget profileImage() {
-    return Container(
-      width: 40.0,
-      height: 40.0,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        image: DecorationImage(
-          image: AssetImage(AssetConstants.SPLASH_BACKGROUND),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
+    return driverImage != ""
+        ? Container(
+            width: 40.0,
+            height: 40.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: NetworkImage(driverImage, scale: 1),
+                fit: BoxFit.cover,
+              ),
+            ),
+          )
+        : Container(
+            width: 40.0,
+            height: 40.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: NetworkImage(
+                    "http://admin.sendeaze.com/public/assets/img/logo_3.png",
+                    scale: 1),
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
   }
 
   int currentSelectedIndex = 0;
@@ -133,6 +149,8 @@ class _AppDrawerState extends State<AppDrawer> {
 
   void getLocalData() async {
     name = await SharedPref().getDataFromLocal(SharedPrefConstants.NAME);
+    driverImage = await SharedPref()
+        .getDataFromLocal(SharedPrefConstants.USER_PROFILE_IMAGE);
     setState(() {});
   }
 }

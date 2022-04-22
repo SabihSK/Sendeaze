@@ -50,7 +50,6 @@ class TextFieldWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(36),
           ),
           child: TextFormField(
-            focusNode: FocusNode(),
             enabled: enabled,
             controller: controller,
             onChanged: onChanged,

@@ -141,8 +141,9 @@ class _LoginPageState extends State<LoginPage> {
                         UserService()
                             .doLogin(_emailController.text,
                                 _passwordController.text, token)
-                            .then(
-                                (value) => setState(() => showLoader = false));
+                            .then((value) => setState(() => showLoader = false))
+                            .onError((error, stackTrace) =>
+                                setState(() => showLoader = false));
                       }
                     } else {
                       AppWidgets.showSnackBar();

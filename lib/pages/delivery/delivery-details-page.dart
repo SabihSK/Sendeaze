@@ -16,7 +16,7 @@ import 'package:sendeaze/widgets/order-details-bottom-sheet.dart';
 
 class DeliveryDetailsPage extends StatefulWidget {
   static String route = "/pages/delivery/delivery-detail-page";
-  final OrderListData? data;
+  final Data? data;
   final width;
 
   static final CameraPosition _kGooglePlex = CameraPosition(

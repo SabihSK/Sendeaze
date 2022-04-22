@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +10,9 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sendeaze/constants/assets-constants.dart';
 import 'package:sendeaze/constants/color-constants.dart';
+import 'package:sendeaze/constants/shared-pref-constant.dart';
 import 'package:sendeaze/models/profile_model.dart';
+import 'package:sendeaze/services/common/shared-preference-service.dart';
 import 'package:sendeaze/services/user/user-service.dart';
 import 'package:sendeaze/widgets/app-back-button.dart';
 import 'package:sendeaze/widgets/app-loader.dart';
@@ -27,6 +31,17 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  @override
+  void initState() {
+    getProfileImage();
+    super.initState();
+  }
+
+  getProfileImage() async {
+    profilePic = await SharedPref()
+        .getDataFromLocal(SharedPrefConstants.USER_PROFILE_IMAGE);
+  }
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final PageController _pageController = PageController();
   TextEditingController _currentPasswordController = TextEditingController();
@@ -42,11 +57,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       isConfirmPasswordChange = false;
   int currentPage = 0;
   File? fileUrl;
-  String firstName = "",
-      lastName = "",
-      phoneNumber = "",
-      profilePic = "",
-      role = "";
+  String firstName = "", lastName = "", phoneNumber = "", role = "";
+  String? profilePic;
+  bool isImageLoaded = true;
 
   bool showLoader = false;
   late final Future<ProfileModel>? myProfile = UserService().getProfile();
@@ -71,7 +84,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _form(ProfileData? data) {
+  Widget _form(Data? data) {
     String? name = data?.name;
     String? lastName = "";
     String? firstName = "";
@@ -287,10 +300,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Center(
       child: Stack(
         children: [
-          profilePic != ''
-
-//          profileImg != null
-//              && profileImg.isNotEmpty
+          isImageLoaded
               ? Container(
                   width: 140,
                   height: 140,
@@ -307,13 +317,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     image: DecorationImage(
                       fit: BoxFit.cover,
                       // image: NetworkImage(profileImg)
-                      image: FileImage(
-                        File(profilePic),
-                      ),
+                      image: NetworkImage(profilePic ??
+                          "http://admin.sendeaze.com/public/assets/img/logo_3.png"),
+                      // FileImage(
+                      //   File(profilePic),
+                      // ),
                     ),
                   ),
                 )
               : Container(
+                  width: 140,
+                  height: 140,
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -326,13 +340,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(
-                        AssetConstants.PAGE_BACKGROUND,
-                      ),
+                      // image: NetworkImage(profileImg)
+                      image: NetworkImage(
+                          "http://admin.sendeaze.com/public/assets/img/logo_3.png"),
+                      // FileImage(
+                      //   File(profilePic),
+                      // ),
                     ),
                   ),
-                  width: 140,
-                  height: 140,
                 ),
           Positioned(
               bottom: 0,
@@ -341,7 +356,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 mini: true,
                 child: const Icon(Icons.edit, color: Colors.white),
                 backgroundColor: AppColors.PRIMARY,
-                onPressed: () => showActionSheet(),
+                onPressed: () {
+                  showActionSheet();
+
+                  // openImage();
+                },
               )),
         ],
       ),
@@ -395,11 +414,55 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         source: source, maxWidth: 1200.0, maxHeight: 2000.0, imageQuality: 100);
     print("File: " + pickedFile!.path);
 
+    await SharedPref()
+        .setStringToLocal(SharedPrefConstants.USER_PROFILE_IMAGE, "");
+    isImageLoaded = false;
+    setState(() {});
+    openImage(pickedFile);
     File rotatedImage =
         await FlutterExifRotation.rotateImage(path: pickedFile.path);
     fileUrl = File(rotatedImage.path);
     print("$fileUrl & ${this.profilePic}");
-    this.profilePic = rotatedImage.path;
-    setState(() {});
+  }
+
+  final ImagePicker imgpicker = ImagePicker();
+  String imagepath = "";
+
+  openImage(pickedFile) async {
+    try {
+      // var pickedFile = await imgpicker.pickImage(source: ImageSource.gallery);
+      //you can use ImageCourse.camera for Camera capture
+      if (pickedFile != null) {
+        imagepath = pickedFile.path;
+        print(imagepath);
+        //output /data/user/0/com.example.testapp/cache/image_picker7973898508152261600.jpg
+
+        File imagefile = File(imagepath); //convert Path to File
+        Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
+        String base64string =
+            base64.encode(imagebytes); //convert bytes to base64 string
+        print(base64string);
+        /* Output:
+              /9j/4Q0nRXhpZgAATU0AKgAAAAgAFAIgAAQAAAABAAAAAAEAAAQAAAABAAAJ3
+              wIhAAQAAAABAAAAAAEBAAQAAAABAAAJ5gIiAAQAAAABAAAAAAIjAAQAAAABAAA
+              AAAIkAAQAAAABAAAAAAIlAAIAAAAgAAAA/gEoAA ... long string output
+              */
+
+        UserService().uploadImageFunc(base64string).then((value) async => {
+              this.profilePic = await SharedPref()
+                  .getDataFromLocal(SharedPrefConstants.USER_PROFILE_IMAGE),
+              isImageLoaded = true,
+              setState(() {}),
+            });
+
+        Uint8List decodedbytes = base64.decode(base64string);
+        //decode base64 stirng to bytes
+
+      } else {
+        print("No image is selected.");
+      }
+    } catch (e) {
+      print("error while picking file.");
+    }
   }
 }

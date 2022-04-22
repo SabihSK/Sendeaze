@@ -16,11 +16,13 @@ import 'package:sendeaze/models/driver-location-model.dart';
 import 'package:sendeaze/models/orders-list-response.dart';
 import 'package:sendeaze/pages/home-page.dart';
 import 'package:sendeaze/services/common/shared-preference-service.dart';
+import 'package:sendeaze/services/map_data_service.dart';
 import 'package:sendeaze/services/orders/orders-services.dart';
 import 'package:sendeaze/widgets/address-card-on-delivery-page.dart';
 import 'package:sendeaze/widgets/app-back-button.dart';
 import 'package:sendeaze/widgets/app-divder.dart';
 import 'package:sendeaze/widgets/app-loader.dart';
+import 'package:sendeaze/widgets/app-widgets.dart';
 import 'package:sendeaze/widgets/button-widget.dart';
 import 'package:sendeaze/widgets/order-details-bottom-sheet.dart';
 import 'package:sendeaze/widgets/order-info-card-on-delivery-page.dart';
@@ -37,7 +39,7 @@ LatLng DEST_LOCATION = LatLng(_destLatitude, _destLongitude);
 
 class OnGoingDeliveryPage extends StatefulWidget {
   static String route = "/pages/delivery/ongoing-delivery-page";
-  final OrderListData? data;
+  final Data? data;
   final width;
 
   OnGoingDeliveryPage({Key? key, this.data, required this.width})
@@ -435,8 +437,25 @@ class _OnGoingDeliveryPageState extends State<OnGoingDeliveryPage>
       padding: EdgeInsets.symmetric(horizontal: 12),
       width: double.infinity,
       child: OutlinedButton(
-        onPressed: () {
-          cancelReasonDialog();
+        onPressed: () async {
+          print("object");
+          await location.getLocation().then((value) async {
+            await MapPolylineApi()
+                .getMapPolyline(
+                    value.latitude,
+                    value.longitude,
+                    widget.data!.deliveryLatitude!,
+                    widget.data!.deliveryLongitude!)
+                .then((value) {
+              if (double.parse(
+                      value.routes[0].legs[0].distance.text.split(" ")[0]) <
+                  1.0) {
+                cancelReasonDialog();
+              } else {
+                AppWidgets.showSnackBar("You are not in the radius of 1 KM.");
+              }
+            });
+          });
         },
         child: Text(
           "Cancel Delivery",

@@ -19,9 +19,9 @@ class StatisticsCard extends StatelessWidget {
           }
           var statics = snapshot.data?.data?.stats ??
               Stats(
-                  totalOrdersDelivered: 0,
+                  totalOrdersDeliveredToday: 0,
                   totalRatings: 0,
-                  totalTimeSpentMinutes: 0);
+                  timeSpentMinutesToday: "0");
 
           return Card(
             elevation: 2,
@@ -45,7 +45,8 @@ class StatisticsCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      buildStatData(val: statics.totalOrdersDelivered!.toInt()),
+                      buildStatData(
+                          val: statics.totalOrdersDeliveredToday!.toInt()),
                       buildStatData(
                           title: "rating".tr,
                           icon: AssetConstants.STAR_ICON,
@@ -53,7 +54,7 @@ class StatisticsCard extends StatelessWidget {
                       buildStatData(
                           title: "total_time".tr,
                           icon: AssetConstants.TIME_ICON,
-                          val: statics.totalTimeSpentMinutes!),
+                          val: statics.timeSpentMinutesToday!),
                     ],
                   )
                 ],

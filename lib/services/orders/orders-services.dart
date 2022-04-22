@@ -32,6 +32,9 @@ class OrderService {
   var deliveriesData;
 
   Future<OrderListResponse> getDeliveries() async {
+    try {} catch (e) {
+      print(e);
+    }
     // //  Position? position = await getCurrentLocation();
     //   Position? position = await Geolocator.getCurrentPosition(
     //       desiredAccuracy: LocationAccuracy.high);

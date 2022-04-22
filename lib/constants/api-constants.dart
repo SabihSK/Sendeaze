@@ -7,10 +7,12 @@ abstract class AppApi {
   static const String CHANGE_PASSWORD = "change/password";
   static const String PROFILE_PICTURE = "login/driver";
   static const String TODAY_ORDERS_LIST = "driver/today/orders";
-  static const String DELIVERY_LIST_BASED_ON_STATUS = "driver/deliveries/status";
+  static const String DELIVERY_LIST_BASED_ON_STATUS =
+      "driver/deliveries/status";
   static const String TODAY_DELIVERIES_LIST = "driver/today/deliveries";
   static const String MARK_AS_PICKED = "deliveries/mark/as/picked";
   static const String UPDATE_DELIVERY_STATUS = "update/delivery/status";
   static const String GIVE_RATING_REVIEWS = "give/rating/reviews";
   static const String REPORT_ISSUE = "report/issue";
+  static const String UPDATE_PICTURE = "driver/picture/update";
 }

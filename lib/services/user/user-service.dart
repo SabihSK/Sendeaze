@@ -8,6 +8,7 @@ import 'package:sendeaze/constants/api-constants.dart';
 import 'package:sendeaze/constants/shared-pref-constant.dart';
 import 'package:sendeaze/models/login-response.dart';
 import 'package:sendeaze/models/profile_model.dart';
+import 'package:sendeaze/models/profile_picture_update_mode.dart';
 import 'package:sendeaze/models/report_issue_model.dart';
 import 'package:sendeaze/pages/home-page.dart';
 import 'package:sendeaze/services/common/api-services.dart';
@@ -25,9 +26,10 @@ class UserService {
     };
     final httpJson = await ApiService().doPost(AppApi.USER_LOGIN, body);
     LoginResponse response = LoginResponse.fromJson(httpJson);
-    if (response.error != null) {
-      AppWidgets.showSnackBar(response.error.toString());
-    }
+    // if (response.error != null) {
+    //   AppWidgets.showSnackBar(response.error.toString());
+    // }
+    print("${response.code}");
     if (response.code != null && response.code == "200") {
       await SharedPref().setStringToLocal(
           SharedPrefConstants.USER_EMAIL, response.data!.email!);
@@ -37,6 +39,10 @@ class UserService {
           SharedPrefConstants.driver_id, response.data!.id.toString());
       await SharedPref().setStringToLocal(
           SharedPrefConstants.token, response.data!.validationToken!);
+
+      await SharedPref().setStringToLocal(
+          SharedPrefConstants.USER_PROFILE_IMAGE, response.data!.profileImg!);
+
       await SharedPref().setBoolToLocal("rememberMe", true);
       // bool rememeber =
       //    await SharedPref().getBoolFromLocal("rememberMe");
@@ -52,6 +58,35 @@ class UserService {
       Get.toNamed(HomePage.route);
     }
     return response;
+  }
+
+  Future uploadImageFunc(picture) async {
+    String token =
+        await SharedPref().getDataFromLocal(SharedPrefConstants.token);
+    String driverId =
+        await SharedPref().getDataFromLocal(SharedPrefConstants.driver_id);
+    try {
+      final body = {
+        'validation_token': '$token',
+        'driver_id': '$driverId',
+        'profile_picture': '$picture'
+      };
+      final httpJson = await ApiService().doPost(AppApi.UPDATE_PICTURE, body);
+      ProfilePictureUpdateModel response =
+          ProfilePictureUpdateModel.fromJson(httpJson);
+      if (response.error != null) {
+        AppWidgets.showSnackBar(response.error.toString());
+      }
+      if (response.code != null && response.code == "200") {
+        AppWidgets.showSnackBar(response.message ?? "Please reupload image");
+        await SharedPref().setStringToLocal(
+            SharedPrefConstants.USER_PROFILE_IMAGE, response.data!.profileImg!);
+
+        return response;
+      }
+    } catch (e) {
+      AppWidgets.showSnackBar(e.toString());
+    }
   }
 
   Future forgotPassword(String email) async {

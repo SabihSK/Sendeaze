@@ -10,7 +10,7 @@ import 'app-divder.dart';
 
 class OrderDetailCard extends StatelessWidget {
   final Function()? ontap;
-  final OrderListData? data;
+  final Data? data;
   const OrderDetailCard({this.ontap, this.data});
   @override
   Widget build(BuildContext context) {
@@ -55,6 +55,10 @@ class OrderDetailCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             orderNumWidget(text: "Order #${data?.boxUniqueId}"),
+                            orderNumWidget(
+                                text:
+                                    "Distance ${data?.estimatedDistance!.toStringAsFixed(2)} KM",
+                                icon: AssetConstants.DISTANCE_ICON),
                           ],
                         )
                       ],
