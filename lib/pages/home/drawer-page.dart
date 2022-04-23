@@ -7,6 +7,7 @@ import 'package:sendeaze/pages/home/profile.dart';
 import 'package:sendeaze/pages/login-page.dart';
 import 'package:sendeaze/pages/qr-code-page.dart';
 import 'package:sendeaze/pages/report_issue_page.dart';
+import 'package:sendeaze/pages/scan-details-page.dart';
 import 'package:sendeaze/services/common/shared-preference-service.dart';
 import 'package:sendeaze/services/user/user-service.dart';
 import 'package:sendeaze/utils/app-dummy-data.dart';
@@ -132,7 +133,7 @@ class _AppDrawerState extends State<AppDrawer> {
         gotoNextPage(DeliveryHistoryPage.route);
         break;
       case 3:
-        gotoNextPage(QRCodeScreen.routeName);
+        gotoNextPage(ScanDetails.routeName);
         break;
       default:
         {

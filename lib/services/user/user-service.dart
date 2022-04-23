@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 import 'package:sendeaze/constants/api-constants.dart';
 import 'package:sendeaze/constants/shared-pref-constant.dart';
+import 'package:sendeaze/models/get_assigned_deliveries_model.dart';
 import 'package:sendeaze/models/login-response.dart';
 import 'package:sendeaze/models/profile_model.dart';
 import 'package:sendeaze/models/profile_picture_update_mode.dart';
@@ -219,6 +220,10 @@ class UserService {
         await SharedPref().getDataFromLocal(SharedPrefConstants.token);
     String driverId =
         await SharedPref().getDataFromLocal(SharedPrefConstants.driver_id);
+    if (driverId == "") {
+      driverId = "0";
+    }
+
     final body = {
       "validation_token": token,
       "driver_id": int?.parse(driverId),
@@ -227,11 +232,12 @@ class UserService {
     final httpJson = await ApiService().doPost(AppApi.LOGOUT, body);
     ProfileModel response = ProfileModel.fromJson(httpJson);
     if (response.error != null) {
-      AppWidgets.showSnackBar(response.error.toString());
+      print(response.error.toString());
     }
     if (response.code != null && response.code == "200") {
       return response;
     }
+
     return response;
   }
 

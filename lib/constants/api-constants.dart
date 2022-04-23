@@ -11,8 +11,10 @@ abstract class AppApi {
       "driver/deliveries/status";
   static const String TODAY_DELIVERIES_LIST = "driver/today/deliveries";
   static const String MARK_AS_PICKED = "deliveries/mark/as/picked";
+  static const String MARK_AS_READY = "deliveries/mark/as/ready";
   static const String UPDATE_DELIVERY_STATUS = "update/delivery/status";
   static const String GIVE_RATING_REVIEWS = "give/rating/reviews";
   static const String REPORT_ISSUE = "report/issue";
   static const String UPDATE_PICTURE = "driver/picture/update";
+  static const String today_assigned_deliveries = "today/assigned/deliveries";
 }

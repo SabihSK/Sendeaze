@@ -118,7 +118,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 )
               ],
             ),
-            buildProfilePic(data!.profileImg),
+            buildProfilePic(data?.profileImg),
             SizedBox(height: 30),
             TextFieldWidget(
               icon: AssetConstants.PROFILE_ICON,
@@ -145,7 +145,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               hintText: "mobile_number".tr,
 //              controller: _mobileNumberController,
               icon: AssetConstants.MOBILE_ICON,
-              initialValue: data.mobileNum,
+              initialValue: data?.mobileNum,
             ),
             // TextFieldWidget(
             //   hintText: "address".tr,

@@ -26,6 +26,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:wakelock/wakelock.dart';
 
+Future<void> backgroundHandler(RemoteMessage message) async {
+  print(message.data.toString());
+  print(message.notification!.title);
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Wakelock.enable();
@@ -44,6 +49,7 @@ void main() async {
 //       projectId: 'sendeaze-342620', // from google service.json file
 //     ),
       );
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   Get.put(DeliveriesController());
 
   String? token = await FirebaseMessaging.instance.getToken();

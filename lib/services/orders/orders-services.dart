@@ -1,5 +1,6 @@
 import 'package:sendeaze/constants/api-constants.dart';
 import 'package:sendeaze/constants/shared-pref-constant.dart';
+import 'package:sendeaze/models/get_assigned_deliveries_model.dart';
 import 'package:sendeaze/models/orders-list-response.dart';
 import 'package:sendeaze/services/common/api-services.dart';
 import 'package:sendeaze/services/common/shared-preference-service.dart';
@@ -32,9 +33,6 @@ class OrderService {
   var deliveriesData;
 
   Future<OrderListResponse> getDeliveries() async {
-    try {} catch (e) {
-      print(e);
-    }
     // //  Position? position = await getCurrentLocation();
     //   Position? position = await Geolocator.getCurrentPosition(
     //       desiredAccuracy: LocationAccuracy.high);
@@ -46,11 +44,12 @@ class OrderService {
         await SharedPref().getDataFromLocal(SharedPrefConstants.token);
     String driverId =
         await SharedPref().getDataFromLocal(SharedPrefConstants.driver_id);
+    if (driverId == "") {
+      driverId = "0";
+    }
     final body = {
       "validation_token": token,
       "driver_id": int.parse(driverId),
-      // "current_latitude": 30.1872069,
-      // "current_longitude": 71.4339977
       "current_latitude": lat,
       "current_longitude": long
     };
@@ -88,6 +87,60 @@ class OrderService {
       return httpJson;
     }
     return httpJson;
+  }
+
+  Future<dynamic> markAsReady(dynamic idsStatuses) async {
+    String token =
+        await SharedPref().getDataFromLocal(SharedPrefConstants.token);
+    String driverId =
+        await SharedPref().getDataFromLocal(SharedPrefConstants.driver_id);
+    final body = {
+      "validation_token": token,
+      "driver_id": int.parse(driverId),
+      "ids_statuses": idsStatuses
+    };
+    final httpJson = await ApiService().doPost(AppApi.MARK_AS_READY, body);
+    if (httpJson["error"] != null) {
+      AppWidgets.showSnackBar(httpJson["error"]);
+    }
+    if (httpJson["code"] != null && httpJson["code"] == "200") {
+      AppWidgets.showSnackBar(httpJson["message"]);
+
+      return httpJson;
+    }
+    return httpJson;
+  }
+
+  Future todayAssignedDeliveriesFunc() async {
+    String lat = await SharedPref().getDataFromLocal('lat');
+    print("=>lat $lat");
+    String long = await SharedPref().getDataFromLocal('lng');
+    print("=>lan $long");
+    String token =
+        await SharedPref().getDataFromLocal(SharedPrefConstants.token);
+    String driverId =
+        await SharedPref().getDataFromLocal(SharedPrefConstants.driver_id);
+    try {
+      final body = {
+        "validation_token": token,
+        "driver_id": int.parse(driverId),
+        "current_latitude": lat,
+        "current_longitude": long
+      };
+      final httpJson =
+          await ApiService().doPost(AppApi.today_assigned_deliveries, body);
+      GetAssignedDeliveriesModel response =
+          GetAssignedDeliveriesModel.fromJson(httpJson);
+      if (response.error != null) {
+        AppWidgets.showSnackBar(response.error.toString());
+      }
+      if (response.code != null && response.code == "200") {
+        AppWidgets.showSnackBar(response.message);
+        return response;
+      }
+    } catch (e) {
+      AppWidgets.showSnackBar(e.toString());
+    }
   }
 
   Future<dynamic> updateDeliveryStatus(int? deliveryId, String status,

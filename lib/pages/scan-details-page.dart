@@ -14,9 +14,11 @@ import 'package:sendeaze/widgets/text-field-widget.dart';
 
 class ScanDetails extends StatefulWidget {
   static String routeName = "/pages/scan-details-page";
-  final ScanDetailsModel? data;
+  // final ScanDetailsModel? data;
 
-  ScanDetails({Key? key, this.data}) : super(key: key);
+  ScanDetails({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<ScanDetails> createState() => _ScanDetailsState();
@@ -24,173 +26,214 @@ class ScanDetails extends StatefulWidget {
 
 class _ScanDetailsState extends State<ScanDetails> {
   bool _showLoader = false;
-  late final argss;
+  bool _pageLoadin = true;
+  // late final argss;
+  var todayAssignedDeliveriesData;
+  int s = 0, m = 0, l = 0;
 
   // DeliveriesController _deliveriesController = Get.put(DeliveriesController());
   @override
   void initState() {
     super.initState();
-    print("argument ${Get.arguments}");
-    final jsonData = jsonDecode(Get.arguments.toString());
-    argss = ScanDetailsModel.fromJson(jsonData);
-    var _list = argss.info as List;
-    //first adding all the deliveries in the list
-    _list.forEach((e) {
-      _idsStatuses.add({"id": e.id, "status": "Not Delivered"});
-    });
-
+    getFutureData();
     // _deliveriesController.getInfoList(argss.info ?? []);
     // print("lskfjdlks ${_deliveriesController.infoList.length}");
+  }
+
+  getFutureData() async {
+    todayAssignedDeliveriesData =
+        await OrderService().todayAssignedDeliveriesFunc();
+    // print("argument ${Get.arguments}");
+    // final jsonData = jsonDecode(Get.arguments.toString());
+    // argss = ScanDetailsModel.fromJson(jsonData);
+    // var _list = argss.info as List;
+    // //first adding all the deliveries in the list
+    if (await todayAssignedDeliveriesData?.data! != null) {
+      await todayAssignedDeliveriesData.data.forEach((e) {
+        if (e.boxSize == "S") {
+          s++;
+        } else if (e.boxSize == "M") {
+          m++;
+        } else if (e.boxSize == "L") {
+          l++;
+        }
+        _idsStatuses.add({"id": e.id, "status": "Ready"});
+      });
+    }
+    _pageLoadin = false;
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    s = 0;
+    m = 0;
+    l = 0;
+    _idsStatuses.clear();
+    super.dispose();
   }
 
   List<Map<String, dynamic>> _idsStatuses = [];
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Scaffold(
+      body: _pageLoadin
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Stack(
                 children: [
-                  Row(
-                    children: [
-                      AppBackButton(isTransparent: true),
-                      SizedBox(width: 15),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 25),
-                        child: Text(
-                          "scan_details".tr,
-                          style: Get.textTheme.headline6,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            AppBackButton(isTransparent: true),
+                            SizedBox(width: 15),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 25),
+                              child: Text(
+                                "scan_details".tr,
+                                style: Get.textTheme.headline6,
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 30),
-                  Column(
-                    children: [
-                      //                      buildTextField(text: args['client_id'].toString()),
-                      buildTextField(text: argss.clientName),
-                      buildTextField(
-                          hint: "vendor_branch_name",
-                          text: argss.pickupLocation),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          buildOvalContainer(argss.boxesQuantity?.s ?? 0),
-                          buildOvalContainer(
-                              argss.boxesQuantity?.m ?? 0, "Medium"),
-                          buildOvalContainer(
-                              argss.boxesQuantity?.l ?? 0, "Large"),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(
-                          "Update Box Status",
-                          style: Get.textTheme.caption!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          var infoItem = argss.info![index];
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 10),
-                            child: Row(
+                        SizedBox(height: 10),
+                        Column(
+                          children: [
+                            //                      buildTextField(text: args['client_id'].toString()),
+                            // buildTextField(text: argss.clientName),
+                            // buildTextField(
+                            //     hint: "vendor_branch_name",
+                            //     text: argss.pickupLocation),
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      "Box ID: ${infoItem.boxClientId}",
-                                      style: Get.textTheme.button!
-                                          .copyWith(color: AppColors.PRIMARY),
-                                    ),
-                                    Text(
-                                      widget.data?.clientName ?? "",
-                                      style: Get.textTheme.caption!
-                                          .copyWith(fontSize: 10),
-                                    ),
-                                  ],
-                                ),
-                                Spacer(),
-                                CircularIconWidget(
-                                    color: infoItem.isSelected
-                                        ? Colors.greenAccent
-                                        : null,
-                                    onPressed: () {
-                                      if (infoItem.isSelected) {
-                                        // _idsStatuses.firstWhere(
-                                        //     (e) => e["id"] == infoItem.id);
-                                        _idsStatuses[index]["status"] =
-                                            "Not Available";
-                                      } else {
-                                        _idsStatuses[index]["status"] =
-                                            "Picked";
-
-                                        // _idsStatuses.add({
-                                        //   "id": infoItem.id,
-                                        //   "status": "picked"
-                                        // });
-                                      }
-                                      infoItem.isSelected =
-                                          !infoItem.isSelected;
-                                      setState(() {});
-                                      print(
-                                          "list ${_idsStatuses.length} \n$_idsStatuses");
-                                    },
-                                    iconData: Icons.done_outlined),
+                                buildOvalContainer(s),
+                                buildOvalContainer(m),
+                                buildOvalContainer(l),
                               ],
                             ),
-                          );
-                        },
-                        shrinkWrap: true,
-                        itemCount: argss.info?.length ?? 0,
-                      ),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(
+                                "Update Box Status",
+                                style: Get.textTheme.caption!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                // var infoItem =
+                                //     todayAssignedDeliveriesData.data[index];
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30, vertical: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            "Box ID: ${todayAssignedDeliveriesData?.data[index].boxUniqueId}",
+                                            style: Get.textTheme.button!
+                                                .copyWith(
+                                                    color: AppColors.PRIMARY),
+                                          ),
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      CircularIconWidget(
+                                          color: _idsStatuses[index]
+                                                      ["status"] ==
+                                                  "Ready"
+                                              ? Colors.greenAccent
+                                              : null,
+                                          onPressed: () {
+                                            setState(() {
+                                              if (_idsStatuses[index]
+                                                      ["status"] ==
+                                                  "Ready") {
+                                                // _idsStatuses.firstWhere(
+                                                //     (e) => e["id"] == infoItem.id);
+                                                _idsStatuses[index]["status"] =
+                                                    "Unavailable";
+                                                // print(
+                                                //     "list ${_idsStatuses[index]['status']}");
+                                              } else {
+                                                _idsStatuses[index]["status"] =
+                                                    "Ready";
+                                                // print(
+                                                //     "list ${_idsStatuses[index]['status']}");
+
+                                                // _idsStatuses.add({
+                                                //   "id": infoItem.id,
+                                                //   "status": "picked"
+                                                // });
+                                              }
+
+                                              print(
+                                                  "list ${_idsStatuses.length} \n$_idsStatuses");
+                                            });
+                                          },
+                                          iconData: Icons.done_outlined),
+                                    ],
+                                  ),
+                                );
+                              },
+                              shrinkWrap: true,
+                              itemCount:
+                                  todayAssignedDeliveriesData?.data.length ?? 0,
+                            ),
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        todayAssignedDeliveriesData?.data != null
+                            ? ButtonWidget(
+                                btnText: "confirm".tr,
+                                onPressed: () {
+                                  _pageLoadin = true;
+                                  setState(() {});
+                                  OrderService().markAsReady(_idsStatuses).then(
+                                    (value) {
+                                      setState(() => _pageLoadin = false);
+                                      if (value["error"] == null) {
+                                        Future.delayed(Duration(seconds: 2),
+                                            () {
+                                          Get.offAllNamed(HomePage.route);
+                                        });
+                                      }
+                                    },
+                                  );
+                                },
+                              )
+                            : Center(
+                                child: Text("No deliveries found"),
+                              ),
+                        SizedBox(
+                          height: 30,
+                        )
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  ButtonWidget(
-                    btnText: "confirm".tr,
-                    onPressed: () {
-                      _showLoader = true;
-                      setState(() {});
-                      OrderService().markAsPicked(_idsStatuses).then(
-                        (value) {
-                          setState(() => _showLoader = false);
-                          if (value["error"] == null) {
-                            Future.delayed(Duration(seconds: 2), () {
-                              Get.offAllNamed(HomePage.route);
-                            });
-                          }
-                        },
-                      );
-                    },
-                  ),
-                  SizedBox(
-                    height: 30,
-                  )
                 ],
               ),
             ),
-            if (_showLoader) Center(child: AppLoader())
-          ],
-        ),
-      ),
     );
   }
 
