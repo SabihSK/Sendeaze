@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:sendeaze/controllers/change_google_map_polyline_controller.dart';
 import 'package:sendeaze/controllers/delivery-controller.dart';
+import 'package:sendeaze/notificationservice/local_notification_service.dart';
 import 'package:sendeaze/pages/delivery/delivery-details-page.dart';
 import 'package:sendeaze/pages/delivery/delivery-history-page.dart';
 import 'package:sendeaze/pages/delivery/ongoing-delivery-page.dart';
@@ -34,6 +35,7 @@ Future<void> backgroundHandler(RemoteMessage message) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Wakelock.enable();
+  LocalNotificationService.initialize();
   await Firebase.initializeApp(
 //     name: "Sendeaze",
 //     options: FirebaseOptions(

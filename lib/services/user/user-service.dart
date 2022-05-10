@@ -56,7 +56,7 @@ class UserService {
           .child("driverToken/${response.data!.id}")
           .update({"driverToken": token});
 
-      Get.toNamed(HomePage.route);
+      Get.offAllNamed(HomePage.route);
     }
     return response;
   }

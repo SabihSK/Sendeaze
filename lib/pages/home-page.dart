@@ -15,8 +15,10 @@ import 'package:sendeaze/constants/color-constants.dart';
 import 'package:sendeaze/constants/shared-pref-constant.dart';
 import 'package:sendeaze/controllers/delivery-controller.dart';
 import 'package:sendeaze/controllers/firebase_location_controller.dart';
+import 'package:sendeaze/notificationservice/local_notification_service.dart';
 import 'package:sendeaze/pages/home/drawer-page.dart';
 import 'package:sendeaze/pages/home/profile.dart';
+import 'package:sendeaze/pages/scan-details-page.dart';
 import 'package:sendeaze/services/common/shared-preference-service.dart';
 import 'package:sendeaze/widgets/app-widgets.dart';
 
@@ -58,6 +60,8 @@ class _HomePageState extends State<HomePage> {
         print("FirebaseMessaging.instance.getInitialMessage");
         if (message != null) {
           print("New Notification");
+
+          Get.toNamed(ScanDetails.routeName);
           // if (message.data['_id'] != null) {
           //   Navigator.of(context).push(
           //     MaterialPageRoute(
@@ -79,8 +83,7 @@ class _HomePageState extends State<HomePage> {
           print(message.notification!.title);
           print(message.notification!.body);
           print("message.data11 ${message.data}");
-          // LocalNotificationService.display(message);
-
+          LocalNotificationService.createanddisplaynotification(message);
         }
       },
     );
@@ -92,7 +95,7 @@ class _HomePageState extends State<HomePage> {
         if (message.notification != null) {
           print(message.notification!.title);
           print(message.notification!.body);
-          print("message.data22 ${message.data['_id']}");
+          print("message.data22 ${message.data['key_1']}");
         }
       },
     );

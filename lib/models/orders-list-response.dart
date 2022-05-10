@@ -338,7 +338,8 @@ class Data {
     vehicleId = json['vehicle_id'];
     deliveredAt = json['delivered_at'];
     deliveryStatus = json['delivery_status'];
-    estimatedDistance = json['estimated_distance'];
+    estimatedDistance =
+        json['estimated_distance'] == 0 ? 0.0 : json['estimated_distance'];
     totalDeliveryTime = json['total_delivery_time'];
     totalDistanceTravelledKm = json['total_distance_travelled_km'];
     notDeliveredReason = json['not_delivered_reason'];
