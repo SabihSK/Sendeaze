@@ -9,7 +9,7 @@ import 'package:sendeaze/services/common/shared-preference-service.dart';
 import 'package:sendeaze/widgets/mini-btn-widget.dart';
 
 class DetailsBottomSheet extends StatelessWidget {
-  final Data? data;
+  var data;
   final driverName;
 
   DetailsBottomSheet({Key? key, this.data, required this.driverName})

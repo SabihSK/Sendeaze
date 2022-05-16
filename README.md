@@ -1,6 +1,7 @@
 # sendeaze
 
 A driver app keep track of delivered item.
+Made in Flutter (2.10.5)
 
 ## Getting Started
 

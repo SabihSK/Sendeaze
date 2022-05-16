@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sendeaze/constants/color-constants.dart';
-import 'package:sendeaze/models/orders-list-response.dart';
+import 'package:sendeaze/models/history_of_deliveries.dart';
 import 'package:sendeaze/pages/delivery/delivery-details-page.dart';
 import 'package:sendeaze/services/orders/orders-services.dart';
 import 'package:sendeaze/widgets/app-back-button.dart';
 import 'package:sendeaze/widgets/app-divder.dart';
 import 'package:sendeaze/widgets/order-detail-card.dart';
+import 'package:sendeaze/models/orders-list-response.dart'
+    as ordersListResponse;
 
 class DeliveryHistoryPage extends StatefulWidget {
   static String route = "/pages/delivery/delivery-page";
@@ -59,7 +61,7 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
               // SizedBox(height: 15),
               AppDivider(),
               Expanded(
-                child: FutureBuilder<OrderListResponse>(
+                child: FutureBuilder<HistoryOfDeliveries>(
                     future: OrderService()
                         .getDeliveredBasedOnStatus(currentIndex == 0
                             ? "All"
@@ -69,15 +71,15 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting)
                         return Center(child: CircularProgressIndicator());
-                      if (snapshot.data?.data == null) {
+                      if (snapshot.data?.datum == null) {
                         return Center(child: Text("No orders found."));
                       }
                       return ListView.builder(
                           shrinkWrap: true,
                           physics: ClampingScrollPhysics(),
-                          itemCount: snapshot.data!.data?.length ?? 0,
+                          itemCount: snapshot.data!.datum?.data!.length ?? 0,
                           itemBuilder: (context, index) {
-                            var item = snapshot.data!.data![index];
+                            var item = snapshot.data!.datum!.data![index];
                             return OrderDetailCard(
                                 data: item,
                                 ontap: () => Get.to(() => DeliveryDetailsPage(

@@ -270,7 +270,7 @@ class Data {
   String? secretCode;
   int? driverId;
   int? vehicleId;
-  Null? deliveredAt;
+  String? deliveredAt;
   String? deliveryStatus;
   double? estimatedDistance;
   int? totalDeliveryTime;

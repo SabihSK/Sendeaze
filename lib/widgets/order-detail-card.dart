@@ -10,8 +10,8 @@ import 'app-divder.dart';
 
 class OrderDetailCard extends StatelessWidget {
   final Function()? ontap;
-  final Data? data;
-  const OrderDetailCard({this.ontap, this.data});
+  var data;
+  OrderDetailCard({this.ontap, this.data});
   @override
   Widget build(BuildContext context) {
     return Column(

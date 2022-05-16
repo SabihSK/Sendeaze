@@ -112,9 +112,9 @@ class _ScanDetailsState extends State<ScanDetails> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                buildOvalContainer(s),
-                                buildOvalContainer(m),
-                                buildOvalContainer(l),
+                                buildOvalContainer(s, "small"),
+                                buildOvalContainer(m, "medium"),
+                                buildOvalContainer(l, "large"),
                               ],
                             ),
                             SizedBox(

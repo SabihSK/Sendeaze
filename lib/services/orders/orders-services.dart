@@ -1,6 +1,7 @@
 import 'package:sendeaze/constants/api-constants.dart';
 import 'package:sendeaze/constants/shared-pref-constant.dart';
 import 'package:sendeaze/models/get_assigned_deliveries_model.dart';
+import 'package:sendeaze/models/history_of_deliveries.dart';
 import 'package:sendeaze/models/orders-list-response.dart';
 import 'package:sendeaze/services/common/api-services.dart';
 import 'package:sendeaze/services/common/shared-preference-service.dart';
@@ -8,7 +9,7 @@ import 'package:sendeaze/widgets/app-widgets.dart';
 import 'package:geolocator/geolocator.dart';
 
 class OrderService {
-  Future<OrderListResponse> getDeliveredBasedOnStatus(status) async {
+  Future<HistoryOfDeliveries> getDeliveredBasedOnStatus(status) async {
     String token =
         await SharedPref().getDataFromLocal(SharedPrefConstants.token);
     String driverId =
@@ -20,7 +21,7 @@ class OrderService {
     };
     final httpJson =
         await ApiService().doPost(AppApi.DELIVERY_LIST_BASED_ON_STATUS, body);
-    OrderListResponse response = OrderListResponse.fromJson(httpJson);
+    HistoryOfDeliveries response = HistoryOfDeliveries.fromJson(httpJson);
     if (response.error != null) {
       AppWidgets.showSnackBar(response.error.toString());
     }
